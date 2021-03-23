@@ -77,7 +77,8 @@ class UUIDFetcher(
 
     private fun getTexture(profile: SkinProfile): String? {
         val node = mapper.readTree(getUser(profile.uuid!!))
-        if (node.get("properties")[0]["name"].asText().equals("textures")) {
+
+        if (node.has("properties") && node.get("properties")[0]["name"].asText().equals("textures")) {
             return node.get("properties")[0]["value"].asText()
         }
         return null
