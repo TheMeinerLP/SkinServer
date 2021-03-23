@@ -1,10 +1,12 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.ir.backend.js.compile
 
 plugins {
 	id("org.springframework.boot") version "2.4.4"
 	id("io.spring.dependency-management") version "1.0.11.RELEASE"
 	kotlin("jvm") version "1.4.31"
 	kotlin("plugin.spring") version "1.4.31"
+	kotlin("kapt") version "1.3.61"
 }
 
 group = "dev.themeinerlp"
@@ -15,10 +17,14 @@ configurations {
 	compileOnly {
 		extendsFrom(configurations.annotationProcessor.get())
 	}
+
 }
 
 repositories {
 	mavenCentral()
+	maven {
+		url = uri("https://packages.jetbrains.team/maven/p/skija/maven")
+	}
 }
 
 dependencies {
@@ -32,6 +38,9 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 	implementation("org.springframework.session:spring-session-core")
+	implementation("org.apache.httpcomponents:httpclient:4.5.13")
+	kapt("org.springframework.boot:spring-boot-configuration-processor")
+	api("org.jetbrains.skija:skija-windows:0.90.1")
 	compileOnly("org.projectlombok:lombok")
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")

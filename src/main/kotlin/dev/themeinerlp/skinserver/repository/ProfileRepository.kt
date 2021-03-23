@@ -5,6 +5,6 @@ import org.springframework.data.mongodb.repository.MongoRepository
 
 interface ProfileRepository : MongoRepository<SkinProfile, String> {
 
-    fun findProfileByUsername(username: String): SkinProfile
+    fun findProfileByUsername(username: String): SkinProfile?
 
 }
