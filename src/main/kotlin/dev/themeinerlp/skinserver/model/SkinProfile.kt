@@ -9,4 +9,5 @@ class SkinProfile {
     var username: String? = null
     var uuid: String? = null
     var texture: String? = null
+    var base64Texture: String? = null
 }

@@ -59,8 +59,8 @@ class UUIDFetcher(
         return profile
     }
 
-    private fun getTexture(profile: SkinProfile): String? {
-        val getRequest = HttpGet("https://sessionserver.mojang.com/session/minecraft/profile/${profile.uuid}")
+    fun getUser(uuid: String): String? {
+        val getRequest = HttpGet("https://sessionserver.mojang.com/session/minecraft/profile/${uuid}")
         getRequest.config = RequestConfig
             .custom()
             .setRedirectsEnabled(false)
@@ -72,7 +72,11 @@ class UUIDFetcher(
         if (execute.statusLine.statusCode != 200) {
             throw IllegalStateException("Mojang has probably blocked you :(")
         }
-        val node = mapper.readTree(execute.entity.content)
+        return mapper.readTree(execute.entity.content).asText()
+    }
+
+    private fun getTexture(profile: SkinProfile): String? {
+        val node = mapper.readTree(getUser(profile.uuid!!))
         if (node.get("properties")[0]["name"].asText().equals("textures")) {
             return node.get("properties")[0]["value"].asText()
         }

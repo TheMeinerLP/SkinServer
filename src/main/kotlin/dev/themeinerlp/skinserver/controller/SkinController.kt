@@ -7,7 +7,6 @@ import dev.themeinerlp.skinserver.model.SkinProfile
 import dev.themeinerlp.skinserver.repository.ProfileRepository
 import dev.themeinerlp.skinserver.service.UUIDFetcher
 import org.jetbrains.skija.*
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.core.io.InputStreamResource
 import org.springframework.http.MediaType
@@ -27,20 +26,15 @@ class SkinController(
 
     @ResponseBody
     @RequestMapping(
-        "skin/{size}/{username}",
+        "skin/by/username/{size}/{username}",
         method = [RequestMethod.GET]
     )
-    fun getSkin(@PathVariable size: Int?, @PathVariable username: String?): ResponseEntity<Any> {
-        if (size == null) {
-            return ResponseEntity.badRequest().body("\"${size}\" is no valide size! Use ${config.minSize} - ${config.maxSize}")
+    fun getByUsernameSkin(@PathVariable size: Int?, @PathVariable username: String?): ResponseEntity<Any> {
+        val response = checkDefaultParameters(size,username)
+        if (response != null) {
+            return response
         }
-        if (size < this.config.minSize!! || size > this.config.maxSize!!) {
-            return ResponseEntity.badRequest().body("\"${size}\" is no valide size! Use ${config.minSize} - ${config.maxSize}")
-        }
-        if (username == null) {
-            return ResponseEntity.badRequest().body("\"${username}\" is required!")
-        }
-        val playerSkin = PlayerSkin(username, size)
+        val playerSkin = PlayerSkin(username!!, size!!)
         var skinProfile: SkinProfile? = this.repository.findProfileByUsername(username)
         if (skinProfile == null) {
             skinProfile = uuidFetcher.findPlayer(username)
@@ -54,24 +48,59 @@ class SkinController(
         return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(InputStreamResource(renderSkin(playerSkin).inputStream()))
     }
 
+    @ResponseBody
+    @RequestMapping(
+        "skin/by/uuid/{size}/{uuid}",
+        method = [RequestMethod.GET]
+    )
+    fun getByUUIDSkin(@PathVariable size: Int?, @PathVariable uuid: String?): ResponseEntity<Any> {
+        if (uuid == null) {
+            return ResponseEntity.badRequest().body("\"${uuid}\" is required!")
+        }
+        var skinProfile: SkinProfile? = this.repository.findProfileByUuid(uuid)
+        val username = if (skinProfile?.username != null) {
+            skinProfile.username
+        } else {
+            this.mapper.readTree(this.uuidFetcher.getUser(uuid))["name"].asText()
+        }
+        val response = checkDefaultParameters(size,username)
+        if (response != null) {
+            return response
+        }
+        val playerSkin = PlayerSkin(username!!, size!!)
+        if (skinProfile == null) {
+            skinProfile = uuidFetcher.findPlayer(username!!)
+            this.repository.insert(skinProfile)
+        }
+        val url: String = getSkinUrl(skinProfile.texture) ?: return ResponseEntity.badRequest().body("URL is empty for database entry!")
+        if (!isCached(playerSkin, url)) {
+            downloadSkin(url,playerSkin)
+        }
+
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(InputStreamResource(renderSkin(playerSkin).inputStream()))
+    }
+
 
     @ResponseBody
     @RequestMapping(
-        "head/{size}/{username}",
+        "head/by/uuid/{size}/{uuid}",
         method = [RequestMethod.GET]
     )
-    fun getHead(@PathVariable size: Int?, @PathVariable username: String?): ResponseEntity<Any> {
-        if (size == null) {
-            return ResponseEntity.badRequest().body("\"${size}\" is no valide size! Use ${config.minSize} - ${config.maxSize}")
+    fun getByUUIDHead(@PathVariable size: Int?, @PathVariable uuid: String?): ResponseEntity<Any> {
+        if (uuid == null) {
+            return ResponseEntity.badRequest().body("\"${uuid}\" is required!")
         }
-        if (size < this.config.minSize!! || size > this.config.maxSize!!) {
-            return ResponseEntity.badRequest().body("\"${size}\" is no valide size! Use ${config.minSize} - ${config.maxSize}")
+        var skinProfile: SkinProfile? = this.repository.findProfileByUuid(uuid)
+        val username = if (skinProfile?.username != null) {
+            skinProfile.username
+        } else {
+            this.mapper.readTree(this.uuidFetcher.getUser(uuid))["name"].asText()
         }
-        if (username == null) {
-            return ResponseEntity.badRequest().body("\"${username}\" is required!")
+        val response = checkDefaultParameters(size,username)
+        if (response != null) {
+            return response
         }
-        val playerSkin = PlayerSkin(username, size)
-        var skinProfile: SkinProfile? = this.repository.findProfileByUsername(username)
+        val playerSkin = PlayerSkin(username!!, size!!)
         if (skinProfile == null) {
             skinProfile = uuidFetcher.findPlayer(username)
             this.repository.insert(skinProfile)
@@ -81,7 +110,52 @@ class SkinController(
             downloadSkin(url,playerSkin)
         }
 
+
+
         return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(InputStreamResource(renderHead(playerSkin).inputStream()))
+    }
+
+
+    @ResponseBody
+    @RequestMapping(
+        "head/by/username/{size}/{username}",
+        method = [RequestMethod.GET]
+    )
+    fun getByUsernameHead(@PathVariable size: Int?, @PathVariable username: String?): ResponseEntity<Any> {
+        val response = checkDefaultParameters(size,username)
+        if (response != null) {
+            return response
+        }
+        val playerSkin = PlayerSkin(username!!, size!!)
+        var skinProfile: SkinProfile? = this.repository.findProfileByUsername(username)
+        if (skinProfile == null) {
+            skinProfile = uuidFetcher.findPlayer(username)
+            this.repository.insert(skinProfile)
+        }
+        val url: String = getSkinUrl(skinProfile.texture) ?: return ResponseEntity.badRequest().body("URL is empty for database entry!")
+        if (!isCached(playerSkin, url)) {
+            downloadSkin(url,playerSkin)
+        }
+        saveTextureInDatabase(playerSkin, skinProfile)
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(InputStreamResource(renderHead(playerSkin).inputStream()))
+    }
+
+    fun checkDefaultParameters(size: Int?, value: String?): ResponseEntity<Any>? {
+        if (size == null) {
+            return ResponseEntity.badRequest().body("\"${size}\" is no valide size! Use ${config.minSize} - ${config.maxSize}")
+        }
+        if (size < this.config.minSize!! || size > this.config.maxSize!!) {
+            return ResponseEntity.badRequest().body("\"${size}\" is no valide size! Use ${config.minSize} - ${config.maxSize}")
+        }
+        if (value == null) {
+            return ResponseEntity.badRequest().body("\"${value}\" is required!")
+        }
+        return null
+    }
+
+    fun saveTextureInDatabase(playerSkin: PlayerSkin, skinProfile: SkinProfile) {
+        skinProfile.base64Texture = String(Base64.getEncoder().encode(Files.readAllBytes(playerSkin.skinFile)))
+        this.repository.save(skinProfile)
     }
 
     fun getSkinUrl(texture: String?): String? {
@@ -98,36 +172,36 @@ class SkinController(
     }
 
     fun renderHead(playerSkin: PlayerSkin): ByteArray {
-        val skinData = Data.makeFromFileName(playerSkin.skinFile.toString())
-        val skinImage = Image.makeFromEncoded(skinData.bytes)
         val surface = Surface.makeRasterN32Premul(playerSkin.size, playerSkin.size)
-        val canvas = surface.canvas
-        val small = skinImage.height == 32
-        if (small) {
-            canvas.drawImageRect(
-                skinImage, Rect.makeWH(skinImage.width.toFloat(), skinImage.height.toFloat())
-                    .offset(8F,8F),
-                Rect.makeWH(playerSkin.size.toFloat(), playerSkin.size.toFloat() / 2).scale(8F, 8F )
-            )
-            canvas.drawImageRect(
-                skinImage, Rect.makeWH(skinImage.width.toFloat(), skinImage.height.toFloat())
-                    .offset(40F,8F),
-                Rect.makeWH(playerSkin.size.toFloat(), playerSkin.size.toFloat() / 2 ).scale(8F, 8F )
-            )
-        } else {
-            canvas.drawImageRect(
-                skinImage, Rect.makeWH(skinImage.width.toFloat(), skinImage.height.toFloat())
-                    .offset(8F,8F),
-                Rect.makeWH(playerSkin.size.toFloat(), playerSkin.size.toFloat()).scale(8F, 8F )
-            )
-            canvas.drawImageRect(
-                skinImage, Rect.makeWH(skinImage.width.toFloat(), skinImage.height.toFloat())
-                    .offset(40F,8F),
-                Rect.makeWH(playerSkin.size.toFloat(), playerSkin.size.toFloat()).scale(8F, 8F )
-            )
-        }
+        Data.makeFromFileName(playerSkin.skinFile.toString()).use {
+            val skinImage = Image.makeFromEncoded(it.bytes)
 
-        skinData.close()
+            val canvas = surface.canvas
+            val small = skinImage.height == 32
+            if (small) {
+                canvas.drawImageRect(
+                    skinImage, Rect.makeWH(skinImage.width.toFloat(), skinImage.height.toFloat())
+                        .offset(8F,8F),
+                    Rect.makeWH(playerSkin.size.toFloat(), playerSkin.size.toFloat() / 2).scale(8F, 8F )
+                )
+                canvas.drawImageRect(
+                    skinImage, Rect.makeWH(skinImage.width.toFloat(), skinImage.height.toFloat())
+                        .offset(40F,8F),
+                    Rect.makeWH(playerSkin.size.toFloat(), playerSkin.size.toFloat() / 2 ).scale(8F, 8F )
+                )
+            } else {
+                canvas.drawImageRect(
+                    skinImage, Rect.makeWH(skinImage.width.toFloat(), skinImage.height.toFloat())
+                        .offset(8F,8F),
+                    Rect.makeWH(playerSkin.size.toFloat(), playerSkin.size.toFloat()).scale(8F, 8F )
+                )
+                canvas.drawImageRect(
+                    skinImage, Rect.makeWH(skinImage.width.toFloat(), skinImage.height.toFloat())
+                        .offset(40F,8F),
+                    Rect.makeWH(playerSkin.size.toFloat(), playerSkin.size.toFloat()).scale(8F, 8F )
+                )
+            }
+        }
         return surface.makeImageSnapshot().encodeToData()!!.bytes
     }
 
