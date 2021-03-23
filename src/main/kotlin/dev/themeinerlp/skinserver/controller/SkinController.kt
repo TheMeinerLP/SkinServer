@@ -1,5 +1,7 @@
 package dev.themeinerlp.skinserver.controller
 
+import com.fasterxml.jackson.core.TreeNode
+import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import dev.themeinerlp.skinserver.config.SkinServerConfig
 import dev.themeinerlp.skinserver.model.PlayerSkin
@@ -45,6 +47,9 @@ class SkinController(
             downloadSkin(url,playerSkin)
         }
 
+        if (skinProfile.base64Texture == null) {
+            saveTextureInDatabase(playerSkin, skinProfile)
+        }
         return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(InputStreamResource(renderSkin(playerSkin).inputStream()))
     }
 
@@ -69,12 +74,16 @@ class SkinController(
         }
         val playerSkin = PlayerSkin(username!!, size!!)
         if (skinProfile == null) {
-            skinProfile = uuidFetcher.findPlayer(username!!)
+            skinProfile = uuidFetcher.findPlayer(username)
             this.repository.insert(skinProfile)
         }
         val url: String = getSkinUrl(skinProfile.texture) ?: return ResponseEntity.badRequest().body("URL is empty for database entry!")
         if (!isCached(playerSkin, url)) {
             downloadSkin(url,playerSkin)
+        }
+
+        if (skinProfile.base64Texture == null) {
+            saveTextureInDatabase(playerSkin, skinProfile)
         }
 
         return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(InputStreamResource(renderSkin(playerSkin).inputStream()))
@@ -110,7 +119,9 @@ class SkinController(
             downloadSkin(url,playerSkin)
         }
 
-
+        if (skinProfile.base64Texture == null) {
+            saveTextureInDatabase(playerSkin, skinProfile)
+        }
 
         return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(InputStreamResource(renderHead(playerSkin).inputStream()))
     }
@@ -136,19 +147,27 @@ class SkinController(
         if (!isCached(playerSkin, url)) {
             downloadSkin(url,playerSkin)
         }
-        saveTextureInDatabase(playerSkin, skinProfile)
+        if (skinProfile.base64Texture == null) {
+            saveTextureInDatabase(playerSkin, skinProfile)
+        }
         return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(InputStreamResource(renderHead(playerSkin).inputStream()))
     }
 
     fun checkDefaultParameters(size: Int?, value: String?): ResponseEntity<Any>? {
         if (size == null) {
-            return ResponseEntity.badRequest().body("\"${size}\" is no valide size! Use ${config.minSize} - ${config.maxSize}")
+            val node = this.mapper.createObjectNode()
+            node.put("error", "\"${size}\" is no valide size! Use ${config.minSize} - ${config.maxSize}")
+            return ResponseEntity.badRequest().body(node.asText())
         }
         if (size < this.config.minSize!! || size > this.config.maxSize!!) {
-            return ResponseEntity.badRequest().body("\"${size}\" is no valide size! Use ${config.minSize} - ${config.maxSize}")
+            val node = this.mapper.createObjectNode()
+            node.put("error","\"${size}\" is no valide size! Use ${config.minSize} - ${config.maxSize}")
+            return ResponseEntity.badRequest().body(node.asText())
         }
         if (value == null) {
-            return ResponseEntity.badRequest().body("\"${value}\" is required!")
+            val node = this.mapper.createObjectNode()
+            node.put("error", "\"${value}\" is required!")
+            return ResponseEntity.badRequest().body(node.asText())
         }
         return null
     }
