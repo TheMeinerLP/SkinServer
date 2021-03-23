@@ -37,7 +37,12 @@ class UUIDFetcher(
     fun findPlayer(username: String): SkinProfile {
 
         val getRequest = HttpGet("https://api.mojang.com/users/profiles/minecraft/${username}")
-        getRequest.config = RequestConfig.custom().setRedirectsEnabled(false).setLocalAddress(InetAddress.getByName(getLocalAddress())).setConnectTimeout(3000).build()
+        getRequest.config = RequestConfig
+            .custom()
+            .setRedirectsEnabled(false)
+            .setLocalAddress(InetAddress.getByName(getLocalAddress()))
+            .setConnectTimeout(3000)
+            .build()
         getRequest.setHeader("User-Agent","Minecraft-SkinServer")
         val execute = httpClient.execute(getRequest)
         if (execute.statusLine.statusCode != 200) {
@@ -56,7 +61,12 @@ class UUIDFetcher(
 
     private fun getTexture(profile: SkinProfile): String? {
         val getRequest = HttpGet("https://sessionserver.mojang.com/session/minecraft/profile/${profile.uuid}")
-        getRequest.config = RequestConfig.custom().setRedirectsEnabled(false).setLocalAddress(InetAddress.getByName(getLocalAddress())).setConnectTimeout(3000).build()
+        getRequest.config = RequestConfig
+            .custom()
+            .setRedirectsEnabled(false)
+            .setLocalAddress(InetAddress.getByName(getLocalAddress()))
+            .setConnectTimeout(3000)
+            .build()
         getRequest.setHeader("User-Agent","Minecraft-SkinServer")
         val execute = httpClient.execute(getRequest)
         if (execute.statusLine.statusCode != 200) {
@@ -71,7 +81,12 @@ class UUIDFetcher(
 
     fun downloadUrlToFile(url: String, playerSkin: PlayerSkin) {
         val getRequest = HttpGet(url)
-        getRequest.config = RequestConfig.custom().setRedirectsEnabled(false).setLocalAddress(InetAddress.getByName(getLocalAddress())).setConnectTimeout(3000).build()
+        getRequest.config = RequestConfig
+            .custom()
+            .setRedirectsEnabled(false)
+            .setLocalAddress(InetAddress.getByName(getLocalAddress()))
+            .setConnectTimeout(3000)
+            .build()
         getRequest.setHeader("User-Agent","Minecraft-SkinServer")
         val execute = httpClient.execute(getRequest)
         if (execute.statusLine.statusCode != 200) {
