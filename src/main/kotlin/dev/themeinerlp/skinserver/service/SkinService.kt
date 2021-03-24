@@ -8,7 +8,7 @@ import dev.themeinerlp.skinserver.repository.ProfileRepository
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 import java.nio.file.Files
-import java.util.*
+import java.util.Base64;
 
 @Service
 class SkinService(
