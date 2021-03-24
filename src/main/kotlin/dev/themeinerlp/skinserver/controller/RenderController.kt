@@ -8,6 +8,9 @@ import dev.themeinerlp.skinserver.repository.ProfileRepository
 import dev.themeinerlp.skinserver.service.RenderService
 import dev.themeinerlp.skinserver.service.SkinService
 import dev.themeinerlp.skinserver.service.UUIDFetcher
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.responses.ApiResponse
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.core.io.InputStreamResource
 import org.springframework.http.MediaType
@@ -27,35 +30,34 @@ import javax.validation.constraints.NotBlank
 class RenderController(
     @Qualifier("skinServerConfig")
     val config: SkinServerConfig,
-    val repository: ProfileRepository,
-    val uuidFetcher: UUIDFetcher,
-    val skinService: SkinService,
     val renderService: RenderService,
-    val mapper: ObjectMapper
 ) {
 
+    @Operation(
+        summary = "Render a head based on a file",
+        description = "Render a head based on a file value of a png",
+        responses = [
+            ApiResponse(description = "User Head", content = [Content(mediaType = MediaType.IMAGE_PNG_VALUE)], responseCode = "200"),
+            ApiResponse(description = "Something was wrong", content = [Content(mediaType = MediaType.TEXT_PLAIN_VALUE)], responseCode = "500")
+        ]
+    )
     @ResponseBody
     @RequestMapping(
-        "{size}",
-        "{size}/{rotation}",
-        method = [RequestMethod.POST]
+        "{size:[0-9]+}",
+        "{size:[0-9]+}/{rotation}",
+        method = [RequestMethod.POST],
+        produces = [MediaType.IMAGE_PNG_VALUE]
     )
     fun renderSkinHead(
         @RequestBody
         body: Part,
         @NotBlank
-        @PathVariable(required = true) size: Int?,
-        @PathVariable(required = false) rotation: Optional<String>
+        @PathVariable(required = true) size: Int,
+        @PathVariable(required = false) rotation: Optional<HeadView> = Optional.of(HeadView.Front)
     ): ResponseEntity<Any> {
-        val rotationEnum = if (rotation.isPresent) {
-            val firstOrNull = HeadView.values().firstOrNull { it.name.equals(rotation.get(), ignoreCase = true) }
-            firstOrNull ?: HeadView.Front
-        } else {
-            HeadView.Front
-        }
-        val playerSkin = PlayerSkin("example", size!!, rotationEnum)
+        val rotationEnum = rotation.orElse(HeadView.Front)
         val content = body.inputStream.use {
-            this.renderService.renderHeadFromByteArray(playerSkin, it.readAllBytes())
+            this.renderService.renderHeadFromByteArray(size,rotationEnum, it.readAllBytes())
         }
         return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(InputStreamResource(content.inputStream()))
     }

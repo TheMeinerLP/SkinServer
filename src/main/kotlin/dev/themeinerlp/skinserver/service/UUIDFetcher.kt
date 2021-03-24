@@ -58,16 +58,15 @@ class UUIDFetcher(
             val node = mapper.readTree(it.entity.content)
             val profile = SkinProfile()
             val newUUID = node.get("id").asText().replaceFirst(uuidRegex, "$1-$2-$3-$4-$5")
-            val uuid = UUID.fromString(newUUID)
-            profile.uuid = uuid.toString()
+            profile.uuid = UUID.fromString(newUUID)
             profile.username = username
             profile.texture = getTexture(profile)
             return profile
         }
     }
 
-    fun getUser(uuid: String): String? {
-        val getRequest = HttpGet("https://sessionserver.mojang.com/session/minecraft/profile/${uuid}")
+    fun getUser(uuid: UUID): String? {
+        val getRequest = HttpGet("https://sessionserver.mojang.com/session/minecraft/profile/$uuid")
         getRequest.config = RequestConfig
             .custom()
             .setRedirectsEnabled(false)
@@ -94,11 +93,11 @@ class UUIDFetcher(
                 if (it.has("name") && it.get("name").asText().equals("textures", ignoreCase = true)) {
                     return it.get("value").asText()
                 } else {
-                    false
+                    throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Player have no skin value!!!")
                 }
             }!!.asText()
         } else {
-            return null
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Player have no properties value!!!")
         }
     }
 

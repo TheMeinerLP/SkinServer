@@ -6,6 +6,8 @@ plugins {
     kotlin("jvm") version "1.4.31"
     kotlin("plugin.spring") version "1.4.31"
     kotlin("kapt") version "1.3.61"
+    id("com.github.johnrengelman.processes") version "0.5.0"
+    id("org.springdoc.openapi-gradle-plugin") version "1.3.1"
 }
 
 group = "dev.themeinerlp"
@@ -39,6 +41,8 @@ dependencies {
     implementation("org.springframework.session:spring-session-core")
     implementation("org.apache.httpcomponents:httpclient:4.5.13")
     implementation("com.github.vladimir-bukhtoyarov:bucket4j-core:4.10.0")
+    implementation("org.springdoc:springdoc-openapi-webmvc-core:1.5.6")
+    implementation("org.springdoc:springdoc-openapi-ui:1.5.6")
     kapt("org.springframework.boot:spring-boot-configuration-processor")
     api("org.jetbrains.skija:skija-windows:0.90.1")
     compileOnly("org.projectlombok:lombok")

@@ -10,6 +10,7 @@ import dev.themeinerlp.skinserver.service.SkinService
 import dev.themeinerlp.skinserver.service.UUIDFetcher
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.core.io.InputStreamResource
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.server.ResponseStatusException
+import java.util.*
 import javax.validation.constraints.NotBlank
 
 @RestController
@@ -70,29 +73,25 @@ class SkinController(
 
     @ResponseBody
     @RequestMapping(
-        "skin/by/uuid/{size}/{uuid}",
+        "skin/by/uuid/{size}/{uuid:[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}}",
         method = [RequestMethod.GET]
     )
     fun getByUUIDSkin(
         @NotBlank
-        @PathVariable(required = true) size: Int?,
+        @PathVariable(required = true) size: Int,
         @NotBlank
-        @PathVariable(required = true) uuid: String?
+        @PathVariable(required = true) uuid: UUID
     ): ResponseEntity<Any> {
-        if (uuid == null) {
-            return ResponseEntity.badRequest().body("\"${uuid}\" is required!")
-        }
         var skinProfile: SkinProfile? = this.repository.findProfileByUuid(uuid)
         val username = if (skinProfile?.username != null) {
             skinProfile.username
         } else {
             this.mapper.readTree(this.uuidFetcher.getUser(uuid))["name"].asText()
         }
-        val response = checkDefaultParameters(size, username)
-        if (response != null) {
-            return response
+        if (size < this.config.minSize!! || size > this.config.maxSize!!) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "\"${size}\" is no valide size! Use ${config.minSize} - ${config.maxSize}")
         }
-        val playerSkin = PlayerSkin(username!!, size!!)
+        val playerSkin = PlayerSkin(username!!, size)
         if (skinProfile == null) {
             skinProfile = uuidFetcher.findPlayer(username)
             this.repository.insert(skinProfile)
