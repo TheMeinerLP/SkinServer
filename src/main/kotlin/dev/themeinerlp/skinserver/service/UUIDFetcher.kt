@@ -35,7 +35,6 @@ class UUIDFetcher(
     val uuidRegex: Regex = Regex("([0-9a-fA-F]{8})([0-9a-fA-F]{4})([0-9a-fA-F]{4})([0-9a-fA-F]{4})([0-9a-fA-F]+)")
 
     fun findPlayer(username: String): SkinProfile {
-
         val getRequest = HttpGet("https://api.mojang.com/users/profiles/minecraft/${username}")
         getRequest.config = RequestConfig
             .custom()
@@ -44,19 +43,19 @@ class UUIDFetcher(
             .setConnectTimeout(3000)
             .build()
         getRequest.setHeader("User-Agent","Minecraft-SkinServer")
-        val execute = httpClient.execute(getRequest)
-        if (execute.statusLine.statusCode != 200) {
-            throw IllegalStateException("Mojang has probably blocked you :(")
+        httpClient.execute(getRequest).use {
+            if (it.statusLine.statusCode != 200) {
+                throw IllegalStateException("Mojang has probably blocked you :(")
+            }
+            val node = mapper.readTree(it.entity.content)
+            val profile = SkinProfile()
+            val newUUID = node.get("id").asText().replaceFirst(uuidRegex, "$1-$2-$3-$4-$5" )
+            val uuid = UUID.fromString(newUUID)
+            profile.uuid = uuid.toString()
+            profile.username = username
+            profile.texture = getTexture(profile)
+            return profile
         }
-        val node = mapper.readTree(execute.entity.content)
-        val profile = SkinProfile()
-        val newUUID = node.get("id").asText().replaceFirst(uuidRegex, "$1-$2-$3-$4-$5" )
-        val uuid = UUID.fromString(newUUID)
-        profile.uuid = uuid.toString()
-        profile.username = username
-        profile.texture = getTexture(profile)
-        execute.close()
-        return profile
     }
 
     fun getUser(uuid: String): String? {
@@ -68,20 +67,31 @@ class UUIDFetcher(
             .setConnectTimeout(3000)
             .build()
         getRequest.setHeader("User-Agent","Minecraft-SkinServer")
-        val execute = httpClient.execute(getRequest)
-        if (execute.statusLine.statusCode != 200) {
-            throw IllegalStateException("Mojang has probably blocked you :(")
+        httpClient.execute(getRequest).use { it ->
+            if (it.statusLine.statusCode != 200) {
+                throw IllegalStateException("Mojang has probably blocked you :(")
+            }
+            it.entity.content.use { iss ->
+                val content = iss.readAllBytes()
+                return String(content)
+            }
         }
-        return mapper.readTree(execute.entity.content).asText()
     }
 
     private fun getTexture(profile: SkinProfile): String? {
-        val node = mapper.readTree(getUser(profile.uuid!!))
-
-        if (node.has("properties") && node.get("properties")[0]["name"].asText().equals("textures")) {
-            return node.get("properties")[0]["value"].asText()
+        val text = getUser(profile.uuid!!)
+        val node = mapper.readTree(text)
+        if (node.has("properties")) {
+            return node.get("properties").find {
+                if (it.has("name") && it.get("name").asText().equals("textures", ignoreCase = true)) {
+                    return it.get("value").asText()
+                } else {
+                    false
+                }
+            }!!.asText()
+        } else {
+            return null
         }
-        return null
     }
 
 

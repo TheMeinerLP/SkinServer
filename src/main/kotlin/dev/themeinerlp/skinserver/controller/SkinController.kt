@@ -47,6 +47,7 @@ class SkinController(
             skinProfile = uuidFetcher.findPlayer(username)
             this.repository.insert(skinProfile)
         }
+
         val url: String? = this.skinService.extractSkinUrl(skinProfile.texture)
         if (url == null) {
             this.repository.delete(skinProfile)

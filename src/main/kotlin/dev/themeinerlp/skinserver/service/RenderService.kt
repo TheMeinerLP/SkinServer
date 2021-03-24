@@ -17,7 +17,43 @@ class RenderService {
     /**
      * Renders a head as a ByteArray
      */
-    fun renderHeadFront(playerSkin: PlayerSkin): ByteArray {
+    fun renderHeadFromByteArray(playerSkin: PlayerSkin, content: ByteArray): ByteArray {
+        val surface = Surface.makeRasterN32Premul(playerSkin.size, playerSkin.size)
+        Data.makeFromBytes(content).use {
+            val skinImage = Image.makeFromEncoded(it.bytes)
+            val small = skinImage.height == smallHeightIndicator
+            val rotation = playerSkin.rotation
+            if (small) {
+                surface.canvas.drawImageRect(
+                    skinImage, Rect.makeWH(skinImage.width.toFloat(), skinImage.height.toFloat())
+                        .offset(rotation.leftHead,rotation.topHead),
+                    Rect.makeWH(playerSkin.size.toFloat(), playerSkin.size.toFloat() / 2).scale(scaleSize, scaleSize )
+                )
+                surface.canvas.drawImageRect(
+                    skinImage, Rect.makeWH(skinImage.width.toFloat(), skinImage.height.toFloat())
+                        .offset(rotation.overlayLeft,rotation.overlayTop),
+                    Rect.makeWH(playerSkin.size.toFloat(), playerSkin.size.toFloat() / 2 ).scale(scaleSize, scaleSize )
+                )
+            } else {
+                surface.canvas.drawImageRect(
+                    skinImage, Rect.makeWH(skinImage.width.toFloat(), skinImage.height.toFloat())
+                        .offset(rotation.leftHead,rotation.topHead),
+                    Rect.makeWH(playerSkin.size.toFloat(), playerSkin.size.toFloat()).scale(scaleSize, scaleSize )
+                )
+                surface.canvas.drawImageRect(
+                    skinImage, Rect.makeWH(skinImage.width.toFloat(), skinImage.height.toFloat())
+                        .offset(rotation.overlayLeft,rotation.overlayTop),
+                    Rect.makeWH(playerSkin.size.toFloat(), playerSkin.size.toFloat()).scale(scaleSize, scaleSize )
+                )
+            }
+        }
+        return surface.makeImageSnapshot().encodeToData()!!.bytes
+    }
+
+    /**
+     * Renders a head as a ByteArray
+     */
+    fun renderHead(playerSkin: PlayerSkin): ByteArray {
         val surface = Surface.makeRasterN32Premul(playerSkin.size, playerSkin.size)
         Data.makeFromFileName(playerSkin.skinFile.toString()).use {
             val skinImage = Image.makeFromEncoded(it.bytes)

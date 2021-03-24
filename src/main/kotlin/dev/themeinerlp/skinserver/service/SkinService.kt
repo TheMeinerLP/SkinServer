@@ -54,6 +54,11 @@ class SkinService(
         }
         val jsonObject = String(Base64.getDecoder().decode(texture))
         val node = this.mapper.readTree(jsonObject)
-        return node.get("textures").get("SKIN").get("url").asText()
+
+        return if (node.has("textures")) {
+            node.get("textures").get("SKIN").get("url").asText()
+        } else {
+            null
+        }
     }
 }

@@ -78,7 +78,7 @@ class HeadController(
             this.skinService.saveTextureInDatabase(playerSkin, skinProfile)
         }
 
-        return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(InputStreamResource(this.renderService.renderHeadFront(playerSkin).inputStream()))
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(InputStreamResource(this.renderService.renderHead(playerSkin).inputStream()))
     }
 
 
@@ -147,7 +147,7 @@ class HeadController(
         if (skinProfile.base64Texture == null) {
             this.skinService.saveTextureInDatabase(playerSkin, skinProfile)
         }
-        return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(InputStreamResource(this.renderService.renderHeadFront(playerSkin).inputStream()))
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(InputStreamResource(this.renderService.renderHead(playerSkin).inputStream()))
     }
 
     fun checkDefaultParameters(size: Int?, value: String?): ResponseEntity<Any>? {
