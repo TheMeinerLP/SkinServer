@@ -39,6 +39,7 @@ dependencies {
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 	implementation("org.springframework.session:spring-session-core")
 	implementation("org.apache.httpcomponents:httpclient:4.5.13")
+	implementation("com.github.vladimir-bukhtoyarov:bucket4j-core:4.10.0")
 	kapt("org.springframework.boot:spring-boot-configuration-processor")
 	api("org.jetbrains.skija:skija-windows:0.90.1")
 	compileOnly("org.projectlombok:lombok")

@@ -4,6 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import dev.themeinerlp.skinserver.config.SkinServerConfig
 import dev.themeinerlp.skinserver.model.PlayerSkin
 import dev.themeinerlp.skinserver.model.SkinProfile
+import io.github.bucket4j.Bandwidth
+import io.github.bucket4j.Bucket4j
+import io.github.bucket4j.Refill
+import io.github.bucket4j.local.LocalBucket
 import org.apache.http.client.ResponseHandler
 import org.apache.http.client.config.RequestConfig
 import org.apache.http.client.config.RequestConfig.Builder
@@ -23,7 +27,9 @@ import java.net.*
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.nio.file.Files
+import java.time.Duration
 import java.util.*
+import kotlin.collections.HashMap
 
 @Service
 class UUIDFetcher(
@@ -33,6 +39,18 @@ class UUIDFetcher(
 
     val httpClient: CloseableHttpClient = HttpClients.createDefault()
     val uuidRegex: Regex = Regex("([0-9a-fA-F]{8})([0-9a-fA-F]{4})([0-9a-fA-F]{4})([0-9a-fA-F]{4})([0-9a-fA-F]+)")
+    val ipLeft: MutableMap<String, LocalBucket> = HashMap()
+    val limit: Bandwidth
+    init {
+        val refill = Refill.intervally(600, Duration.ofMinutes(10))
+        limit = Bandwidth.classic(600, refill)
+        val bucket = Bucket4j.builder().addLimit(limit).build()
+        this.config.connectionAddresses!!.forEach {
+            this.ipLeft[it] = bucket
+        }
+    }
+
+
 
     fun findPlayer(username: String): SkinProfile {
         val getRequest = HttpGet("https://api.mojang.com/users/profiles/minecraft/${username}")
@@ -97,7 +115,14 @@ class UUIDFetcher(
 
 
     fun getLocalAddress(): String {
-        return this.config.connectionAddresses!!.random()
+        val pair = this.ipLeft.toList().sortedBy { (_, value) -> value.availableTokens }.first()
+        println("${pair.second.availableTokens} Tokens left for 10 Min for: ${pair.first}")
+        return if (pair.second.tryConsume(1)) {
+            pair.first
+        } else {
+            throw IllegalStateException("No Tokens left for IP ${pair.first}")
+        }
+
     }
 
 }
