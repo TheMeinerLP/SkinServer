@@ -84,24 +84,7 @@ class UUIDFetcher(
         return null
     }
 
-    fun downloadUrlToFile(url: String, playerSkin: PlayerSkin) {
-        val getRequest = HttpGet(url)
-        getRequest.config = RequestConfig
-            .custom()
-            .setRedirectsEnabled(false)
-            .setLocalAddress(InetAddress.getByName(getLocalAddress()))
-            .setConnectTimeout(3000)
-            .build()
-        getRequest.setHeader("User-Agent","Minecraft-SkinServer")
-        val execute = httpClient.execute(getRequest)
-        if (execute.statusLine.statusCode != 200) {
-            throw IllegalStateException("Mojang has probably blocked you :(")
-        }
-        val newOutputStream = Files.newOutputStream(playerSkin.skinFile)
-        newOutputStream.write(execute.entity.content.readAllBytes())
-        newOutputStream.close()
-        execute.close()
-    }
+
 
     fun getLocalAddress(): String {
         return this.config.connectionAddresses!!.random()
