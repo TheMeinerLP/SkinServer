@@ -19,13 +19,14 @@ import javax.validation.constraints.NotBlank
 
 @RequestMapping("rendern")
 @RestController
-class RenderController(@Qualifier("skinServerConfig")
-                       val config: SkinServerConfig,
-                       val repository: ProfileRepository,
-                       val uuidFetcher: UUIDFetcher,
-                       val skinService: SkinService,
-                       val renderService: RenderService,
-                       val mapper: ObjectMapper
+class RenderController(
+    @Qualifier("skinServerConfig")
+    val config: SkinServerConfig,
+    val repository: ProfileRepository,
+    val uuidFetcher: UUIDFetcher,
+    val skinService: SkinService,
+    val renderService: RenderService,
+    val mapper: ObjectMapper
 ) {
 
     @ResponseBody
@@ -35,12 +36,12 @@ class RenderController(@Qualifier("skinServerConfig")
         method = [RequestMethod.POST]
     )
     fun renderSkinHead(
-                        @RequestBody
-                       body: Part,
-                       @NotBlank
-                       @PathVariable(required = true)  size: Int?,
-                       @PathVariable(required = false) rotation: Optional<String>
-                       ): ResponseEntity<Any> {
+        @RequestBody
+        body: Part,
+        @NotBlank
+        @PathVariable(required = true) size: Int?,
+        @PathVariable(required = false) rotation: Optional<String>
+    ): ResponseEntity<Any> {
         val rotationEnum = if (rotation.isPresent) {
             val firstOrNull = HeadView.values().firstOrNull { it.name.equals(rotation.get(), ignoreCase = true) }
             firstOrNull ?: HeadView.Front

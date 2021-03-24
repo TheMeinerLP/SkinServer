@@ -9,7 +9,6 @@ import org.apache.http.impl.client.CloseableHttpClient
 import org.apache.http.impl.client.HttpClients
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
-import java.lang.IllegalStateException
 import java.net.InetAddress
 import java.nio.file.Files
 
@@ -31,7 +30,7 @@ class DownloadService(
             .setLocalAddress(InetAddress.getByName(getLocalAddress()))
             .setConnectTimeout(3000)
             .build()
-        getRequest.setHeader("User-Agent","Minecraft-SkinServer")
+        getRequest.setHeader("User-Agent", "Minecraft-SkinServer")
         val execute = httpClient.execute(getRequest)
         if (execute.statusLine.statusCode != 200) {
             throw IllegalStateException("Mojang has probably blocked you :(")

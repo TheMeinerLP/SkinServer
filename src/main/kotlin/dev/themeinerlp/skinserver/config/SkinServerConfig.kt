@@ -13,5 +13,4 @@ class SkinServerConfig {
     var connectionAddresses: List<String>? = ArrayList()
 
 
-
 }

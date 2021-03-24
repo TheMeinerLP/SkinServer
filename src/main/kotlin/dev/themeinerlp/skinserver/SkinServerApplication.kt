@@ -12,5 +12,5 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc
 class SkinServerApplication
 
 fun main(args: Array<String>) {
-	runApplication<SkinServerApplication>(*args)
+    runApplication<SkinServerApplication>(*args)
 }

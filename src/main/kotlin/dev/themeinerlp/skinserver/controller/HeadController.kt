@@ -37,10 +37,11 @@ class HeadController(
     )
     fun getByUUIDHead(
         @NotBlank
-        @PathVariable(required = true)  size: Int?,
+        @PathVariable(required = true) size: Int?,
         @NotBlank
-        @PathVariable(required = true)  uuid: String?,
-        @PathVariable(required = false) rotation: Optional<String>): ResponseEntity<Any> {
+        @PathVariable(required = true) uuid: String?,
+        @PathVariable(required = false) rotation: Optional<String>
+    ): ResponseEntity<Any> {
         if (uuid == null) {
             return ResponseEntity.badRequest().body("\"${uuid}\" is required!")
         }
@@ -50,7 +51,7 @@ class HeadController(
         } else {
             this.mapper.readTree(this.uuidFetcher.getUser(uuid))["name"].asText()
         }
-        val response = checkDefaultParameters(size,username)
+        val response = checkDefaultParameters(size, username)
         if (response != null) {
             return response
         }
@@ -71,14 +72,15 @@ class HeadController(
             return ResponseEntity.badRequest().body("URL is empty for database entry!")
         }
         if (!this.skinService.isCached(playerSkin, url)) {
-            this.skinService.downloadSkin(url,playerSkin)
+            this.skinService.downloadSkin(url, playerSkin)
         }
 
         if (skinProfile.base64Texture == null) {
             this.skinService.saveTextureInDatabase(playerSkin, skinProfile)
         }
 
-        return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(InputStreamResource(this.renderService.renderHead(playerSkin).inputStream()))
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG)
+            .body(InputStreamResource(this.renderService.renderHead(playerSkin).inputStream()))
     }
 
 
@@ -115,12 +117,13 @@ class HeadController(
         method = [RequestMethod.GET]
     )
     fun getByUsernameHead(
-                          @NotBlank
-                          @PathVariable(required = true) size: Int?,
-                          @NotBlank
-                          @PathVariable(required = true) username: String?,
-                          @PathVariable(required = false) rotation: Optional<String>): ResponseEntity<Any> {
-        val response = checkDefaultParameters(size,username)
+        @NotBlank
+        @PathVariable(required = true) size: Int?,
+        @NotBlank
+        @PathVariable(required = true) username: String?,
+        @PathVariable(required = false) rotation: Optional<String>
+    ): ResponseEntity<Any> {
+        val response = checkDefaultParameters(size, username)
         if (response != null) {
             return response
         }
@@ -130,7 +133,7 @@ class HeadController(
         } else {
             HeadView.Front
         }
-        val playerSkin = PlayerSkin(username!!, size!!,rotationEnum)
+        val playerSkin = PlayerSkin(username!!, size!!, rotationEnum)
         var skinProfile: SkinProfile? = this.repository.findProfileByUsername(username)
         if (skinProfile == null) {
             skinProfile = uuidFetcher.findPlayer(username)
@@ -142,12 +145,13 @@ class HeadController(
             return ResponseEntity.badRequest().body("URL is empty for database entry!")
         }
         if (!this.skinService.isCached(playerSkin, url)) {
-            this.skinService.downloadSkin(url,playerSkin)
+            this.skinService.downloadSkin(url, playerSkin)
         }
         if (skinProfile.base64Texture == null) {
             this.skinService.saveTextureInDatabase(playerSkin, skinProfile)
         }
-        return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(InputStreamResource(this.renderService.renderHead(playerSkin).inputStream()))
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG)
+            .body(InputStreamResource(this.renderService.renderHead(playerSkin).inputStream()))
     }
 
     fun checkDefaultParameters(size: Int?, value: String?): ResponseEntity<Any>? {
@@ -158,7 +162,7 @@ class HeadController(
         }
         if (size < this.config.minSize!! || size > this.config.maxSize!!) {
             val node = this.mapper.createObjectNode()
-            node.put("error","\"${size}\" is no valide size! Use ${config.minSize} - ${config.maxSize}")
+            node.put("error", "\"${size}\" is no valide size! Use ${config.minSize} - ${config.maxSize}")
             return ResponseEntity.badRequest().body(node.asText())
         }
         if (value == null) {

@@ -26,24 +26,24 @@ class RenderService {
             if (small) {
                 surface.canvas.drawImageRect(
                     skinImage, Rect.makeWH(skinImage.width.toFloat(), skinImage.height.toFloat())
-                        .offset(rotation.leftHead,rotation.topHead),
-                    Rect.makeWH(playerSkin.size.toFloat(), playerSkin.size.toFloat() / 2).scale(scaleSize, scaleSize )
+                        .offset(rotation.leftHead, rotation.topHead),
+                    Rect.makeWH(playerSkin.size.toFloat(), playerSkin.size.toFloat() / 2).scale(scaleSize, scaleSize)
                 )
                 surface.canvas.drawImageRect(
                     skinImage, Rect.makeWH(skinImage.width.toFloat(), skinImage.height.toFloat())
-                        .offset(rotation.overlayLeft,rotation.overlayTop),
-                    Rect.makeWH(playerSkin.size.toFloat(), playerSkin.size.toFloat() / 2 ).scale(scaleSize, scaleSize )
+                        .offset(rotation.overlayLeft, rotation.overlayTop),
+                    Rect.makeWH(playerSkin.size.toFloat(), playerSkin.size.toFloat() / 2).scale(scaleSize, scaleSize)
                 )
             } else {
                 surface.canvas.drawImageRect(
                     skinImage, Rect.makeWH(skinImage.width.toFloat(), skinImage.height.toFloat())
-                        .offset(rotation.leftHead,rotation.topHead),
-                    Rect.makeWH(playerSkin.size.toFloat(), playerSkin.size.toFloat()).scale(scaleSize, scaleSize )
+                        .offset(rotation.leftHead, rotation.topHead),
+                    Rect.makeWH(playerSkin.size.toFloat(), playerSkin.size.toFloat()).scale(scaleSize, scaleSize)
                 )
                 surface.canvas.drawImageRect(
                     skinImage, Rect.makeWH(skinImage.width.toFloat(), skinImage.height.toFloat())
-                        .offset(rotation.overlayLeft,rotation.overlayTop),
-                    Rect.makeWH(playerSkin.size.toFloat(), playerSkin.size.toFloat()).scale(scaleSize, scaleSize )
+                        .offset(rotation.overlayLeft, rotation.overlayTop),
+                    Rect.makeWH(playerSkin.size.toFloat(), playerSkin.size.toFloat()).scale(scaleSize, scaleSize)
                 )
             }
         }
@@ -62,24 +62,24 @@ class RenderService {
             if (small) {
                 surface.canvas.drawImageRect(
                     skinImage, Rect.makeWH(skinImage.width.toFloat(), skinImage.height.toFloat())
-                        .offset(rotation.leftHead,rotation.topHead),
-                    Rect.makeWH(playerSkin.size.toFloat(), playerSkin.size.toFloat() / 2).scale(scaleSize, scaleSize )
+                        .offset(rotation.leftHead, rotation.topHead),
+                    Rect.makeWH(playerSkin.size.toFloat(), playerSkin.size.toFloat() / 2).scale(scaleSize, scaleSize)
                 )
                 surface.canvas.drawImageRect(
                     skinImage, Rect.makeWH(skinImage.width.toFloat(), skinImage.height.toFloat())
-                        .offset(rotation.overlayLeft,rotation.overlayTop),
-                    Rect.makeWH(playerSkin.size.toFloat(), playerSkin.size.toFloat() / 2 ).scale(scaleSize, scaleSize )
+                        .offset(rotation.overlayLeft, rotation.overlayTop),
+                    Rect.makeWH(playerSkin.size.toFloat(), playerSkin.size.toFloat() / 2).scale(scaleSize, scaleSize)
                 )
             } else {
                 surface.canvas.drawImageRect(
                     skinImage, Rect.makeWH(skinImage.width.toFloat(), skinImage.height.toFloat())
-                        .offset(rotation.leftHead,rotation.topHead),
-                    Rect.makeWH(playerSkin.size.toFloat(), playerSkin.size.toFloat()).scale(scaleSize, scaleSize )
+                        .offset(rotation.leftHead, rotation.topHead),
+                    Rect.makeWH(playerSkin.size.toFloat(), playerSkin.size.toFloat()).scale(scaleSize, scaleSize)
                 )
                 surface.canvas.drawImageRect(
                     skinImage, Rect.makeWH(skinImage.width.toFloat(), skinImage.height.toFloat())
-                        .offset(rotation.overlayLeft,rotation.overlayTop),
-                    Rect.makeWH(playerSkin.size.toFloat(), playerSkin.size.toFloat()).scale(scaleSize, scaleSize )
+                        .offset(rotation.overlayLeft, rotation.overlayTop),
+                    Rect.makeWH(playerSkin.size.toFloat(), playerSkin.size.toFloat()).scale(scaleSize, scaleSize)
                 )
             }
         }
