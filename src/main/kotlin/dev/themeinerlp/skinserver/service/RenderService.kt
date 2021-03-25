@@ -1,7 +1,6 @@
 package dev.themeinerlp.skinserver.service
 
 import dev.themeinerlp.skinserver.config.HeadView
-import dev.themeinerlp.skinserver.model.PlayerSkin
 import org.jetbrains.skija.Data
 import org.jetbrains.skija.Image
 import org.jetbrains.skija.Rect
@@ -18,7 +17,7 @@ class RenderService {
     /**
      * Renders a head as a ByteArray
      */
-    fun renderHeadFromByteArray(size: Int,rotation: HeadView, content: ByteArray): ByteArray {
+    fun renderHeadFromByteArray(size: Int,rotation: HeadView, content: ByteArray, layer: Boolean): ByteArray {
         val surface = Surface.makeRasterN32Premul(size, size)
         Data.makeFromBytes(content).use {
             val skinImage = Image.makeFromEncoded(it.bytes)
@@ -29,58 +28,27 @@ class RenderService {
                         .offset(rotation.leftHead, rotation.topHead),
                     Rect.makeWH(size.toFloat(), size.toFloat() / 2).scale(scaleSize, scaleSize)
                 )
-                surface.canvas.drawImageRect(
-                    skinImage, Rect.makeWH(skinImage.width.toFloat(), skinImage.height.toFloat())
-                        .offset(rotation.overlayLeft, rotation.overlayTop),
-                    Rect.makeWH(size.toFloat(), size.toFloat() / 2).scale(scaleSize, scaleSize)
-                )
-            } else {
-                surface.canvas.drawImageRect(
-                    skinImage, Rect.makeWH(skinImage.width.toFloat(), skinImage.height.toFloat())
-                        .offset(rotation.leftHead, rotation.topHead),
-                    Rect.makeWH(size.toFloat(), size.toFloat()).scale(scaleSize, scaleSize)
-                )
-                surface.canvas.drawImageRect(
-                    skinImage, Rect.makeWH(skinImage.width.toFloat(), skinImage.height.toFloat())
-                        .offset(rotation.overlayLeft, rotation.overlayTop),
-                    Rect.makeWH(size.toFloat(), size.toFloat()).scale(scaleSize, scaleSize)
-                )
-            }
-        }
-        return surface.makeImageSnapshot().encodeToData()!!.bytes
-    }
+                if (layer) {
+                    surface.canvas.drawImageRect(
+                        skinImage, Rect.makeWH(skinImage.width.toFloat(), skinImage.height.toFloat())
+                            .offset(rotation.overlayLeft, rotation.overlayTop),
+                        Rect.makeWH(size.toFloat(), size.toFloat() / 2).scale(scaleSize, scaleSize)
+                    )
+                }
 
-    /**
-     * Renders a head as a ByteArray
-     */
-    fun renderHead(playerSkin: PlayerSkin): ByteArray {
-        val surface = Surface.makeRasterN32Premul(playerSkin.size, playerSkin.size)
-        Data.makeFromFileName(playerSkin.skinFile.toString()).use {
-            val skinImage = Image.makeFromEncoded(it.bytes)
-            val small = skinImage.height == smallHeightIndicator
-            val rotation = playerSkin.rotation
-            if (small) {
-                surface.canvas.drawImageRect(
-                    skinImage, Rect.makeWH(skinImage.width.toFloat(), skinImage.height.toFloat())
-                        .offset(rotation.leftHead, rotation.topHead),
-                    Rect.makeWH(playerSkin.size.toFloat(), playerSkin.size.toFloat() / 2).scale(scaleSize, scaleSize)
-                )
-                surface.canvas.drawImageRect(
-                    skinImage, Rect.makeWH(skinImage.width.toFloat(), skinImage.height.toFloat())
-                        .offset(rotation.overlayLeft, rotation.overlayTop),
-                    Rect.makeWH(playerSkin.size.toFloat(), playerSkin.size.toFloat() / 2).scale(scaleSize, scaleSize)
-                )
             } else {
                 surface.canvas.drawImageRect(
                     skinImage, Rect.makeWH(skinImage.width.toFloat(), skinImage.height.toFloat())
                         .offset(rotation.leftHead, rotation.topHead),
-                    Rect.makeWH(playerSkin.size.toFloat(), playerSkin.size.toFloat()).scale(scaleSize, scaleSize)
+                    Rect.makeWH(size.toFloat(), size.toFloat()).scale(scaleSize, scaleSize)
                 )
-                surface.canvas.drawImageRect(
-                    skinImage, Rect.makeWH(skinImage.width.toFloat(), skinImage.height.toFloat())
-                        .offset(rotation.overlayLeft, rotation.overlayTop),
-                    Rect.makeWH(playerSkin.size.toFloat(), playerSkin.size.toFloat()).scale(scaleSize, scaleSize)
-                )
+                if (layer) {
+                    surface.canvas.drawImageRect(
+                        skinImage, Rect.makeWH(skinImage.width.toFloat(), skinImage.height.toFloat())
+                            .offset(rotation.overlayLeft, rotation.overlayTop),
+                        Rect.makeWH(size.toFloat(), size.toFloat()).scale(scaleSize, scaleSize)
+                    )
+                }
             }
         }
         return surface.makeImageSnapshot().encodeToData()!!.bytes
@@ -89,20 +57,20 @@ class RenderService {
     /**
      * Renders a Skin as a ByteArray
      */
-    fun renderSkin(playerSkin: PlayerSkin): ByteArray {
-        val surface = Surface.makeRasterN32Premul(playerSkin.size, playerSkin.size)
-        Data.makeFromFileName(playerSkin.skinFile.toString()).use {
+    fun renderSkinFromByteArray(size: Int,content: ByteArray): ByteArray {
+        val surface = Surface.makeRasterN32Premul(size,size)
+        Data.makeFromBytes(content).use {
             val skinImage = Image.makeFromEncoded(it.bytes)
             val small = skinImage.height == smallHeightIndicator
             if (small) {
                 surface.canvas.drawImageRect(
                     skinImage, Rect.makeWH(skinImage.width.toFloat(), skinImage.height.toFloat()),
-                    Rect.makeWH(playerSkin.size.toFloat(), playerSkin.size.toFloat() / 2)
+                    Rect.makeWH(size.toFloat(), size.toFloat() / 2)
                 )
             } else {
                 surface.canvas.drawImageRect(
                     skinImage, Rect.makeWH(skinImage.width.toFloat(), skinImage.height.toFloat()),
-                    Rect.makeWH(playerSkin.size.toFloat(), playerSkin.size.toFloat())
+                    Rect.makeWH(size.toFloat(), size.toFloat())
                 )
             }
         }

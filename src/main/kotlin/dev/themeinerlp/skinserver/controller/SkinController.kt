@@ -1,13 +1,11 @@
 package dev.themeinerlp.skinserver.controller
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import dev.themeinerlp.skinserver.config.SkinServerConfig
-import dev.themeinerlp.skinserver.model.PlayerSkin
-import dev.themeinerlp.skinserver.model.SkinProfile
-import dev.themeinerlp.skinserver.repository.ProfileRepository
+import dev.themeinerlp.skinserver.model.Skin
+import dev.themeinerlp.skinserver.repository.SkinRepository
 import dev.themeinerlp.skinserver.service.RenderService
 import dev.themeinerlp.skinserver.service.SkinService
-import dev.themeinerlp.skinserver.service.UUIDFetcher
+import dev.themeinerlp.skinserver.service.GameProfileService
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.core.io.InputStreamResource
 import org.springframework.http.HttpStatus
@@ -26,11 +24,10 @@ import javax.validation.constraints.NotBlank
 class SkinController(
     @Qualifier("skinServerConfig")
     val config: SkinServerConfig,
-    val repository: ProfileRepository,
-    val uuidFetcher: UUIDFetcher,
+    val gameProfileService: GameProfileService,
     val skinService: SkinService,
     val renderService: RenderService,
-    val mapper: ObjectMapper
+    val skinRepository: SkinRepository
 ) {
 
     @ResponseBody
@@ -40,35 +37,46 @@ class SkinController(
     )
     fun getByUsernameSkin(
         @NotBlank
-        @PathVariable(required = true) size: Int?,
+        @PathVariable(required = true) size: Int,
         @NotBlank
-        @PathVariable(required = true) username: String?
+        @PathVariable(required = true) username: String
     ): ResponseEntity<Any> {
-        val response = checkDefaultParameters(size, username)
-        if (response != null) {
-            return response
+        if (size < this.config.minSize!! || size > this.config.maxSize!!) {
+            throw ResponseStatusException(
+                HttpStatus.METHOD_NOT_ALLOWED,
+                "\"${size}\" is no valide size! Use ${config.minSize} - ${config.maxSize}"
+            )
         }
-        val playerSkin = PlayerSkin(username!!, size!!)
-        var skinProfile: SkinProfile? = this.repository.findProfileByUsername(username)
-        if (skinProfile == null) {
-            skinProfile = uuidFetcher.findPlayer(username)
-            this.repository.insert(skinProfile)
+        var skin = this.skinRepository.findByUsername(username)
+        if (skin == null) {
+            skin = Skin()
+            val player = this.gameProfileService.findGameProfile(username) ?: throw ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "Username cannot be found!"
+            )
+            val user = this.gameProfileService.getGameProfile(player.uuid!!) ?: throw ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "User cannot be found!"
+            )
+            val skinUrl = this.skinService.extractSkinUrl(this.gameProfileService.getTextureFromJson(user) ?: throw ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "Skin URL are empty"
+            ))?: throw ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "Skin URL are empty"
+            )
+            skin.username = this.gameProfileService.getNameFromJson(user)
+            skin.uuid = player.uuid!!
+            skin.skinUrl = skinUrl
+            skin.texture = String(Base64.getEncoder().encode(this.gameProfileService.downloadUrlToByteArray(skinUrl)))
+            this.skinRepository.save(skin)
         }
-
-        val url: String? = this.skinService.extractSkinUrl(skinProfile.texture)
-        if (url == null) {
-            this.repository.delete(skinProfile)
-            return ResponseEntity.badRequest().body("URL is empty for database entry!")
-        }
-        if (!this.skinService.isCached(playerSkin, url)) {
-            this.skinService.downloadSkin(url, playerSkin)
-        }
-
-        if (skinProfile.base64Texture == null) {
-            this.skinService.saveTextureInDatabase(playerSkin, skinProfile)
-        }
-        return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG)
-            .body(InputStreamResource(this.renderService.renderSkin(playerSkin).inputStream()))
+        val value = Base64.getDecoder().decode(skin.texture)
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(
+            InputStreamResource(
+                this.renderService.renderSkinFromByteArray(size, value).inputStream()
+            )
+        )
     }
 
     @ResponseBody
@@ -82,54 +90,37 @@ class SkinController(
         @NotBlank
         @PathVariable(required = true) uuid: UUID
     ): ResponseEntity<Any> {
-        var skinProfile: SkinProfile? = this.repository.findProfileByUuid(uuid)
-        val username = if (skinProfile?.username != null) {
-            skinProfile.username
-        } else {
-            this.mapper.readTree(this.uuidFetcher.getUser(uuid))["name"].asText()
-        }
         if (size < this.config.minSize!! || size > this.config.maxSize!!) {
-            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "\"${size}\" is no valide size! Use ${config.minSize} - ${config.maxSize}")
+            throw ResponseStatusException(
+                HttpStatus.METHOD_NOT_ALLOWED,
+                "\"${size}\" is no valide size! Use ${config.minSize} - ${config.maxSize}"
+            )
         }
-        val playerSkin = PlayerSkin(username!!, size)
-        if (skinProfile == null) {
-            skinProfile = uuidFetcher.findPlayer(username)
-            this.repository.insert(skinProfile)
+        var skin = this.skinRepository.findByUuid(uuid)
+        if (skin == null) {
+            skin = Skin()
+            val user = this.gameProfileService.getGameProfile(uuid) ?: throw ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "User cannot be found!"
+            )
+            val skinUrl = this.skinService.extractSkinUrl(this.gameProfileService.getTextureFromJson(user) ?: throw ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "Skin URL are empty"
+            ))?: throw ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "Skin URL are empty"
+            )
+            skin.username = this.gameProfileService.getNameFromJson(user)
+            skin.uuid = uuid
+            skin.skinUrl = skinUrl
+            skin.texture = String(Base64.getEncoder().encode(this.gameProfileService.downloadUrlToByteArray(skinUrl)))
+            this.skinRepository.save(skin)
         }
-        val url: String? = this.skinService.extractSkinUrl(skinProfile.texture)
-        if (url == null) {
-            this.repository.delete(skinProfile)
-            return ResponseEntity.badRequest().body("URL is empty for database entry!")
-        }
-        if (!this.skinService.isCached(playerSkin, url)) {
-            this.skinService.downloadSkin(url, playerSkin)
-        }
-
-        if (skinProfile.base64Texture == null) {
-            this.skinService.saveTextureInDatabase(playerSkin, skinProfile)
-        }
-
-        return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG)
-            .body(InputStreamResource(this.renderService.renderSkin(playerSkin).inputStream()))
-    }
-
-
-    fun checkDefaultParameters(size: Int?, value: String?): ResponseEntity<Any>? {
-        if (size == null) {
-            val node = this.mapper.createObjectNode()
-            node.put("error", "\"${size}\" is no valide size! Use ${config.minSize} - ${config.maxSize}")
-            return ResponseEntity.badRequest().body(node.asText())
-        }
-        if (size < this.config.minSize!! || size > this.config.maxSize!!) {
-            val node = this.mapper.createObjectNode()
-            node.put("error", "\"${size}\" is no valide size! Use ${config.minSize} - ${config.maxSize}")
-            return ResponseEntity.badRequest().body(node.asText())
-        }
-        if (value == null) {
-            val node = this.mapper.createObjectNode()
-            node.put("error", "\"${value}\" is required!")
-            return ResponseEntity.badRequest().body(node.asText())
-        }
-        return null
+        val value = Base64.getDecoder().decode(skin.texture)
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(
+            InputStreamResource(
+                this.renderService.renderSkinFromByteArray(size, value).inputStream()
+            )
+        )
     }
 }

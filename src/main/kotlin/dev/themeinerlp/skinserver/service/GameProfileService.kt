@@ -2,7 +2,7 @@ package dev.themeinerlp.skinserver.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import dev.themeinerlp.skinserver.config.SkinServerConfig
-import dev.themeinerlp.skinserver.model.SkinProfile
+import dev.themeinerlp.skinserver.model.GameProfileHolder
 import io.github.bucket4j.Bandwidth
 import io.github.bucket4j.Bucket4j
 import io.github.bucket4j.Refill
@@ -21,7 +21,7 @@ import java.util.UUID;
 import kotlin.collections.HashMap
 
 @Service
-class UUIDFetcher(
+class GameProfileService(
     @Qualifier("skinServerConfig")
     val config: SkinServerConfig,
     val mapper: ObjectMapper
@@ -42,7 +42,7 @@ class UUIDFetcher(
     }
 
 
-    fun findPlayer(username: String): SkinProfile {
+    fun findGameProfile(username: String): GameProfileHolder? {
         val getRequest = HttpGet("https://api.mojang.com/users/profiles/minecraft/${username}")
         getRequest.config = RequestConfig
             .custom()
@@ -56,16 +56,15 @@ class UUIDFetcher(
                 throw ResponseStatusException(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED, "Mojang has probably blocked you :(")
             }
             val node = mapper.readTree(it.entity.content)
-            val profile = SkinProfile()
+            val profile = GameProfileHolder()
             val newUUID = node.get("id").asText().replaceFirst(uuidRegex, "$1-$2-$3-$4-$5")
             profile.uuid = UUID.fromString(newUUID)
-            profile.username = username
-            profile.texture = getTexture(profile)
+            profile.name = node.get("name").asText()
             return profile
         }
     }
 
-    fun getUser(uuid: UUID): String? {
+    fun getGameProfile(uuid: UUID): String? {
         val getRequest = HttpGet("https://sessionserver.mojang.com/session/minecraft/profile/$uuid")
         getRequest.config = RequestConfig
             .custom()
@@ -85,8 +84,7 @@ class UUIDFetcher(
         }
     }
 
-    private fun getTexture(profile: SkinProfile): String? {
-        val text = getUser(profile.uuid!!)
+    fun getTextureFromJson(text: String): String? {
         val node = mapper.readTree(text)
         if (node.has("properties")) {
             return node.get("properties").find {
@@ -100,6 +98,14 @@ class UUIDFetcher(
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Player have no properties value!!!")
         }
     }
+    fun getNameFromJson(text: String): String {
+        val node = mapper.readTree(text)
+        if (node.has("name")) {
+            return node.get("name").asText()
+        } else {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Player have no name value!!!")
+        }
+    }
 
 
     fun getLocalAddress(): String {
@@ -111,6 +117,23 @@ class UUIDFetcher(
             throw ResponseStatusException(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED, "No Tokens left for IP ${pair.first}")
         }
 
+    }
+
+    fun downloadUrlToByteArray(url: String): ByteArray {
+        val getRequest = HttpGet(url)
+        getRequest.config = RequestConfig
+            .custom()
+            .setRedirectsEnabled(false)
+            .setLocalAddress(InetAddress.getByName(getLocalAddress()))
+            .setConnectTimeout(3000)
+            .build()
+        getRequest.setHeader("User-Agent", "Minecraft-SkinServer")
+        httpClient.execute(getRequest).use {
+            if (it.statusLine.statusCode != 200) {
+                throw IllegalStateException("Mojang has probably blocked you :(")
+            }
+            return it.entity.content.readAllBytes()
+        }
     }
 
 }
