@@ -33,6 +33,8 @@ class HeadController(
 ) {
 
     @Operation(
+        summary = "Get a player head based on a size, uuid and a rotation",
+        description = "Renders a skin head based on there UUID, defined size a optional a rotation. Also with ?layer=false can be disable skin layer",
         responses = [
             ApiResponse(
                 description = "User Head",
@@ -80,7 +82,7 @@ class HeadController(
         @Parameter(
             description = "The uuid for the head to be render",
             required = true,
-            example = "134fb07b-c652-bf05-35df-03d81f0e5189",
+            example = "05bf52c6-7bb0-4f13-8951-0e1fd803df35",
             name = "uuid",
             `in` = ParameterIn.PATH
         )
@@ -141,6 +143,8 @@ class HeadController(
     }
 
     @Operation(
+        summary = "Get a player head based on a size, username from the database and a rotation",
+        description = "Renders a skin head based on there username, defined size a optional a rotation. Also with ?layer=false can be disable skin layer",
         responses = [
             ApiResponse(
                 description = "User Head",

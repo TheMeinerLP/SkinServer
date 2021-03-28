@@ -21,6 +21,8 @@ class RenderController(
 ) {
 
     @Operation(
+        summary = "Renders a skin head based on a skin file and a size",
+        description = "Renders a skin head based on there skin file, defined size a optional a rotation. Also with ?layer=false can be disable skin layer",
         responses = [
             ApiResponse(
                 description = "User Head",
