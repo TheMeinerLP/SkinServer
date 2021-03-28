@@ -7,6 +7,6 @@ import java.util.*
 interface SkinRepository : MongoRepository<Skin, String> {
 
     fun findByUuid(uuid: UUID): Skin?
-    fun findByUsername(username: String): Skin?
+    fun findByUsernameIgnoreCase(username: String): Skin?
 
 }

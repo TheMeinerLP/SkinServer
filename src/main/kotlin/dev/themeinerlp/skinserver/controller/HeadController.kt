@@ -8,6 +8,7 @@ import dev.themeinerlp.skinserver.service.RenderService
 import dev.themeinerlp.skinserver.service.SkinService
 import dev.themeinerlp.skinserver.service.GameProfileService
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import org.springframework.beans.factory.annotation.Qualifier
@@ -149,11 +150,15 @@ class HeadController(
     )
     fun getByUsernameHead(
         @NotBlank
+        @Parameter(description = "A size for the head", required = true, example = "64")
         @PathVariable(required = true) size: Int,
         @NotBlank
         @Size(max = 16)
+        @Parameter(description = "The username for the head to be render or search in the database", required = true, example = "Notch")
         @PathVariable(required = true) username: String,
+        @Parameter(description = "Defines the render side of the head, front, right side etc.", required = true, example = "FRONT")
         @PathVariable(required = false) rotation: Optional<HeadView> = Optional.of(HeadView.Front),
+        @Parameter(description = "Allows to enable or disable skin layer", required = false, example = "true")
         @RequestParam(name = "layer", required = false) layer: Optional<Boolean> = Optional.of(true)
     ): ResponseEntity<Any> {
         if (size < this.config.minSize!! || size > this.config.maxSize!!) {
@@ -162,7 +167,7 @@ class HeadController(
                 "\"${size}\" is no valide size! Use ${config.minSize} - ${config.maxSize}"
             )
         }
-        var skin = this.skinRepository.findByUsername(username)
+        var skin = this.skinRepository.findByUsernameIgnoreCase(username)
         if (skin == null) {
             skin = Skin()
             val player = this.gameProfileService.findGameProfile(username) ?: throw ResponseStatusException(

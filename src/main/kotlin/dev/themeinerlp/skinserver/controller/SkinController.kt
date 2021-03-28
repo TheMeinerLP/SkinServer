@@ -47,7 +47,7 @@ class SkinController(
                 "\"${size}\" is no valide size! Use ${config.minSize} - ${config.maxSize}"
             )
         }
-        var skin = this.skinRepository.findByUsername(username)
+        var skin = this.skinRepository.findByUsernameIgnoreCase(username)
         if (skin == null) {
             skin = Skin()
             val player = this.gameProfileService.findGameProfile(username) ?: throw ResponseStatusException(
