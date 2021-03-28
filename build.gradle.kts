@@ -29,11 +29,6 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.skija:skija-windows:0.90.1")
-    implementation("org.jetbrains.skija:skija-linux:0.90.1")
-    implementation("org.jetbrains.skija:skija-macos-arm64:0.90.1")
-    implementation("org.jetbrains.skija:skija-macos-x64:0.90.1")
-
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
     implementation("org.springframework.boot:spring-boot-starter-validation")
@@ -51,8 +46,6 @@ dependencies {
 
     kapt("org.springframework.boot:spring-boot-configuration-processor")
 
-    compileOnly("org.projectlombok:lombok")
-    annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")
 }
