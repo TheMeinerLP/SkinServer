@@ -4,11 +4,12 @@ import dev.themeinerlp.skinserver.config.HeadView
 import dev.themeinerlp.skinserver.config.SkinServerConfig
 import dev.themeinerlp.skinserver.model.Skin
 import dev.themeinerlp.skinserver.repository.SkinRepository
+import dev.themeinerlp.skinserver.service.GameProfileService
 import dev.themeinerlp.skinserver.service.RenderService
 import dev.themeinerlp.skinserver.service.SkinService
-import dev.themeinerlp.skinserver.service.GameProfileService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.enums.ParameterIn
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import org.springframework.beans.factory.annotation.Qualifier
@@ -19,8 +20,6 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import java.util.*
-import javax.validation.constraints.NotBlank
-import javax.validation.constraints.Size
 
 @RequestMapping("head/by")
 @RestController
@@ -34,8 +33,6 @@ class HeadController(
 ) {
 
     @Operation(
-        summary = "Get a user head of a specified size",
-        description = "Get a user head based on there UUID and Size and optional on the Rotation",
         responses = [
             ApiResponse(
                 description = "User Head",
@@ -72,11 +69,37 @@ class HeadController(
         produces = [MediaType.IMAGE_PNG_VALUE]
     )
     fun getByUUIDHead(
-        @NotBlank
+        @Parameter(
+            description = "A size for the head",
+            required = true,
+            example = "64",
+            name = "size",
+            `in` = ParameterIn.PATH
+        )
         @PathVariable(required = true) size: Int,
-        @NotBlank
+        @Parameter(
+            description = "The uuid for the head to be render",
+            required = true,
+            example = "134fb07b-c652-bf05-35df-03d81f0e5189",
+            name = "uuid",
+            `in` = ParameterIn.PATH
+        )
         @PathVariable(required = true) uuid: UUID,
-        @PathVariable(name = "rotation", required = false) rotation: Optional<HeadView> = Optional.of(HeadView.Front),
+        @Parameter(
+            description = "Defines the render side of the head, front, right side etc.",
+            required = false,
+            example = "FRONT",
+            name = "rotation",
+            `in` = ParameterIn.PATH
+        )
+        @PathVariable(required = false, name = "rotation") rotation: Optional<HeadView> = Optional.of(HeadView.Front),
+        @Parameter(
+            description = "Allows to enable or disable skin layer",
+            required = false,
+            example = "true",
+            name = "layer",
+            `in` = ParameterIn.QUERY
+        )
         @RequestParam(name = "layer", required = false) layer: Optional<Boolean> = Optional.of(true)
     ): ResponseEntity<Any> {
         if (size < this.config.minSize!! || size > this.config.maxSize!!) {
@@ -92,10 +115,12 @@ class HeadController(
                 HttpStatus.NOT_FOUND,
                 "User cannot be found!"
             )
-            val skinUrl = this.skinService.extractSkinUrl(this.gameProfileService.getTextureFromJson(user) ?: throw ResponseStatusException(
-                HttpStatus.NOT_FOUND,
-                "Skin URL are empty"
-            ))?: throw ResponseStatusException(
+            val skinUrl = this.skinService.extractSkinUrl(
+                this.gameProfileService.getTextureFromJson(user) ?: throw ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Skin URL are empty"
+                )
+            ) ?: throw ResponseStatusException(
                 HttpStatus.NOT_FOUND,
                 "Skin URL are empty"
             )
@@ -116,8 +141,6 @@ class HeadController(
     }
 
     @Operation(
-        summary = "Get a user head of a specified size",
-        description = "Get a user head based on there username and Size and optional on the Rotation",
         responses = [
             ApiResponse(
                 description = "User Head",
@@ -149,16 +172,37 @@ class HeadController(
         produces = [MediaType.IMAGE_PNG_VALUE]
     )
     fun getByUsernameHead(
-        @NotBlank
-        @Parameter(description = "A size for the head", required = true, example = "64")
-        @PathVariable(required = true) size: Int,
-        @NotBlank
-        @Size(max = 16)
-        @Parameter(description = "The username for the head to be render or search in the database", required = true, example = "Notch")
-        @PathVariable(required = true) username: String,
-        @Parameter(description = "Defines the render side of the head, front, right side etc.", required = true, example = "FRONT")
-        @PathVariable(required = false) rotation: Optional<HeadView> = Optional.of(HeadView.Front),
-        @Parameter(description = "Allows to enable or disable skin layer", required = false, example = "true")
+        @Parameter(
+            description = "A size for the head",
+            required = true,
+            example = "64",
+            name = "size",
+            `in` = ParameterIn.PATH
+        )
+        @PathVariable(required = true, name = "size") size: Int,
+        @Parameter(
+            description = "The username for the head to be render",
+            required = true,
+            example = "Notch",
+            name = "username",
+            `in` = ParameterIn.PATH
+        )
+        @PathVariable(required = true, name = "username") username: String,
+        @Parameter(
+            description = "Defines the render side of the head, front, right side etc.",
+            required = false,
+            example = "FRONT",
+            name = "rotation",
+            `in` = ParameterIn.PATH
+        )
+        @PathVariable(required = false, name = "rotation") rotation: Optional<HeadView> = Optional.of(HeadView.Front),
+        @Parameter(
+            description = "Allows to enable or disable skin layer",
+            required = false,
+            example = "true",
+            name = "layer",
+            `in` = ParameterIn.QUERY
+        )
         @RequestParam(name = "layer", required = false) layer: Optional<Boolean> = Optional.of(true)
     ): ResponseEntity<Any> {
         if (size < this.config.minSize!! || size > this.config.maxSize!!) {
@@ -178,10 +222,12 @@ class HeadController(
                 HttpStatus.NOT_FOUND,
                 "User cannot be found!"
             )
-            val skinUrl = this.skinService.extractSkinUrl(this.gameProfileService.getTextureFromJson(user) ?: throw ResponseStatusException(
-                HttpStatus.NOT_FOUND,
-                "Skin URL are empty"
-            ))?: throw ResponseStatusException(
+            val skinUrl = this.skinService.extractSkinUrl(
+                this.gameProfileService.getTextureFromJson(user) ?: throw ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Skin URL are empty"
+                )
+            ) ?: throw ResponseStatusException(
                 HttpStatus.NOT_FOUND,
                 "Skin URL are empty"
             )
@@ -196,7 +242,7 @@ class HeadController(
         val value = Base64.getDecoder().decode(skin.texture)
         return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(
             InputStreamResource(
-                this.renderService.renderHeadFromByteArray(size, rotationEnum, value,layerBoolean).inputStream()
+                this.renderService.renderHeadFromByteArray(size, rotationEnum, value, layerBoolean).inputStream()
             )
         )
     }
