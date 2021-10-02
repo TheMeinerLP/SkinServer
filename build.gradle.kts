@@ -69,5 +69,10 @@ tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootBuildImage> {
             token = System.getenv("token")
         }
         isPublish = true
+        builderRegistry {
+            url = "https://ghcr.io/${System.getenv("repository")}"
+            username = System.getenv("username")
+            token = System.getenv("token")
+        }
     }
 }
