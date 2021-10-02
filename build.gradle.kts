@@ -61,6 +61,7 @@ tasks.withType<Test> {
 }
 
 tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootBuildImage> {
+    imageName = "skinserver"
     docker {
         publishRegistry {
             url = "https://ghcr.io/${System.getenv("repository")}"
