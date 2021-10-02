@@ -59,3 +59,13 @@ tasks.withType<KotlinCompile> {
 tasks.withType<Test> {
     useJUnitPlatform()
 }
+
+tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootBuildImage> {
+    docker {
+        publishRegistry {
+            url = "https://ghcr.io/${System.getenv("repository")}"
+            username = System.getenv("username")
+            token = System.getenv("token")
+        }
+    }
+}
