@@ -61,7 +61,7 @@ tasks.withType<Test> {
 }
 
 tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootBuildImage> {
-    imageName = "ghcr.io/${System.getenv("repository")}${project.name.toLowerCase()}"
+    imageName = "ghcr.io/${System.getenv("repository").toLowerCase()}/${project.name.toLowerCase()}"
     docker {
         publishRegistry {
             username = System.getenv("username")
