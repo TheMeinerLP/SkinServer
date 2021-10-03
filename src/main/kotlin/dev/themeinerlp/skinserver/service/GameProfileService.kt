@@ -110,7 +110,6 @@ class GameProfileService(
 
     fun getLocalAddress(): String {
         val pair = this.ipLeft.toList().sortedBy { (_, value) -> value.availableTokens }.first()
-        println("${pair.second.availableTokens} Tokens left for 10 Min for: ${pair.first}")
         return if (pair.second.tryConsume(1)) {
             pair.first
         } else {
