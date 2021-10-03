@@ -27,7 +27,6 @@ jobs:
           java-version: 11
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-      - name: Login to GitHub Container Registry
       - name: Build image with gradle
         run: >
           ./gradlew bootBuildImage
