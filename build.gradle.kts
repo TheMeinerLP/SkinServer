@@ -61,7 +61,7 @@ tasks.withType<Test> {
 }
 
 tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootBuildImage> {
-    imageName = "ghcr.io/${System.getenv("repository")?: "skinserver".toLowerCase()}/${project.name.toLowerCase()}"
+    imageName = "ghcr.io/${System.getenv("repository")?: "skinserver".toLowerCase()}/${project.name.toLowerCase()}:${project.version}"
     docker {
         publishRegistry {
             username = System.getenv("username") ?: null

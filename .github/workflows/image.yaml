@@ -5,7 +5,10 @@ on:
   push:
     branches:
       - 'master'
-      - 'feature/dockerize'
+      - 'main'
+  release:
+    types:
+      - created
 
 jobs:
   package:
