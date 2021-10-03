@@ -8,14 +8,14 @@ This is a simple skin server to downloading, pre-caching and rendering
 
 # Features:
 - Render a skin head based on a file
-- Render a skin/head based on a uuid or username
+- Render a skin/head based on uuid or username
 - Save skins into database for long-time cache
 - Token based IP Selection for mojang requests
 - **Dockerized**
 - **Kubernetes ready**
 
 # Installation with Docker
-Run this command for start a simple single instance with mongodb properties.
+Run this command to start a single instance with mongodb properties.
 ```shell
 docker run --name skinserver \
   -d \
@@ -31,10 +31,10 @@ docker run --name skinserver \
   -p 8080:8080 \
    ghcr.io/themeinerlp/skinserver/skinserver:latest
 ```
-Modify your database, host, username and password for your mongodb server. 
+Modify your database, host, username and password for the mongodb server. 
 Optional: Modify SKINSERVER_MIN/MAX-SIZE and extend your IP Address Range 
 # Installation with Docker-Compose
-Copy this content below and paste in a `docker-compose.yaml` file
+Copy the content below and paste it into a `docker-compose.yaml` file
 ```yaml
 version: '3.1'
 services:
@@ -61,7 +61,7 @@ services:
       SKINSERVER_MIN-SIZE: 16
       SKINSERVER_CONNECTION-ADDRESSES_0: 127.0.0.1
 ```
-The run following commands:
+Then run the following commands:
 ```shell
 docker-compose up -d 
 ```
