@@ -27,7 +27,7 @@ jobs:
 
       - name: Build image with gradle
         run: >
-          ./gradlew bootBuildImage --error
+          ./gradlew bootBuildImage --stacktrace
         env:
           repository: ${{ github.repository }}
           username: ${{ github.repository_owner }}
