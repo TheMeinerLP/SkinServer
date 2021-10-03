@@ -62,7 +62,7 @@ tasks.withType<Test> {
 
 tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootBuildImage> {
     imageName = "skinserver"
-    docker {
+    /*docker {
         host = "ghcr.io"
         isTlsVerify = true
         publishRegistry {
@@ -71,5 +71,6 @@ tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootBuildImage> {
             password = System.getenv("password")
         }
         isPublish = true
-    }
+    }*/
+    isPublish = true
 }
