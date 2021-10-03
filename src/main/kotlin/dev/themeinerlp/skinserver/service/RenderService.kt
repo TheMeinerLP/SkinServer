@@ -2,15 +2,9 @@ package dev.themeinerlp.skinserver.service
 
 import dev.themeinerlp.skinserver.config.HeadView
 import org.springframework.stereotype.Service
-import java.awt.Image
-import java.awt.RenderingHints
 import java.awt.image.BufferedImage
 import javax.imageio.ImageIO
-import java.awt.geom.AffineTransform
 import java.io.ByteArrayOutputStream
-
-import java.awt.image.AffineTransformOp
-import java.awt.image.RescaleOp
 
 
 @Service
