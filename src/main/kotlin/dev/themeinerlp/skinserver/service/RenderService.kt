@@ -1,6 +1,6 @@
 package dev.themeinerlp.skinserver.service
 
-import dev.themeinerlp.skinserver.config.HeadView
+import dev.themeinerlp.skinserver.utils.HeadView
 import org.springframework.stereotype.Service
 import java.awt.image.BufferedImage
 import javax.imageio.ImageIO

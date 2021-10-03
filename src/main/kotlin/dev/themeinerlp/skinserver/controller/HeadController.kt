@@ -1,8 +1,8 @@
 package dev.themeinerlp.skinserver.controller
 
-import dev.themeinerlp.skinserver.config.HeadView
-import dev.themeinerlp.skinserver.config.SkinServerConfig
+import dev.themeinerlp.skinserver.utils.HeadView
 import dev.themeinerlp.skinserver.model.Skin
+import dev.themeinerlp.skinserver.properties.SkinServerProperties
 import dev.themeinerlp.skinserver.repository.SkinRepository
 import dev.themeinerlp.skinserver.service.GameProfileService
 import dev.themeinerlp.skinserver.service.RenderService
@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.enums.ParameterIn
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.responses.ApiResponse
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.core.io.InputStreamResource
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -24,8 +23,7 @@ import java.util.*
 @RequestMapping("head/by")
 @RestController
 class HeadController(
-    @Qualifier("skinServerConfig")
-    val config: SkinServerConfig,
+    val skinServerProperties: SkinServerProperties,
     val gameProfileService: GameProfileService,
     val skinService: SkinService,
     val renderService: RenderService,
@@ -104,10 +102,10 @@ class HeadController(
         )
         @RequestParam(name = "layer", required = false) layer: Optional<Boolean> = Optional.of(true)
     ): ResponseEntity<Any> {
-        if (size < this.config.minSize!! || size > this.config.maxSize!!) {
+        if (size < this.skinServerProperties.minSize || size > this.skinServerProperties.maxSize) {
             throw ResponseStatusException(
                 HttpStatus.METHOD_NOT_ALLOWED,
-                "\"${size}\" is no valide size! Use ${config.minSize} - ${config.maxSize}"
+                "\"${size}\" is no valide size! Use ${skinServerProperties.minSize} - ${skinServerProperties.maxSize}"
             )
         }
         var skin = this.skinRepository.findByUuid(uuid)
@@ -209,10 +207,10 @@ class HeadController(
         )
         @RequestParam(name = "layer", required = false) layer: Optional<Boolean> = Optional.of(true)
     ): ResponseEntity<Any> {
-        if (size < this.config.minSize!! || size > this.config.maxSize!!) {
+        if (size < this.skinServerProperties.minSize || size > this.skinServerProperties.maxSize) {
             throw ResponseStatusException(
                 HttpStatus.METHOD_NOT_ALLOWED,
-                "\"${size}\" is no valide size! Use ${config.minSize} - ${config.maxSize}"
+                "\"${size}\" is no valide size! Use ${skinServerProperties.minSize} - ${skinServerProperties.maxSize}"
             )
         }
         var skin = this.skinRepository.findByUsernameIgnoreCase(username)
@@ -222,7 +220,13 @@ class HeadController(
                 HttpStatus.NOT_FOUND,
                 "Username cannot be found!"
             )
-            val user = this.gameProfileService.getGameProfile(player.uuid!!) ?: throw ResponseStatusException(
+            val user = this.gameProfileService.getGameProfile(
+                player.uuid
+                    ?: throw ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "User UUID is null!"
+                    )
+            ) ?: throw ResponseStatusException(
                 HttpStatus.NOT_FOUND,
                 "User cannot be found!"
             )
@@ -236,7 +240,10 @@ class HeadController(
                 "Skin URL are empty"
             )
             skin.username = this.gameProfileService.getNameFromJson(user)
-            skin.uuid = player.uuid!!
+            skin.uuid = player.uuid ?: throw ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "User UUID is null!"
+            )
             skin.skinUrl = skinUrl
             skin.texture = String(Base64.getEncoder().encode(this.gameProfileService.downloadUrlToByteArray(skinUrl)))
             this.skinRepository.save(skin)

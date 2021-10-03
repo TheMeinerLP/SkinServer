@@ -1,6 +1,6 @@
 package dev.themeinerlp.skinserver.controller
 
-import dev.themeinerlp.skinserver.config.HeadView
+import dev.themeinerlp.skinserver.utils.HeadView
 import dev.themeinerlp.skinserver.service.RenderService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter

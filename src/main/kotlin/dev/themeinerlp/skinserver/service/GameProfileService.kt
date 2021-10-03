@@ -1,8 +1,8 @@
 package dev.themeinerlp.skinserver.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import dev.themeinerlp.skinserver.config.SkinServerConfig
 import dev.themeinerlp.skinserver.model.GameProfileHolder
+import dev.themeinerlp.skinserver.properties.SkinServerProperties
 import io.github.bucket4j.Bandwidth
 import io.github.bucket4j.Bucket4j
 import io.github.bucket4j.Refill
@@ -22,8 +22,7 @@ import kotlin.collections.HashMap
 
 @Service
 class GameProfileService(
-    @Qualifier("skinServerConfig")
-    val config: SkinServerConfig,
+    val skinServerProperties: SkinServerProperties,
     val mapper: ObjectMapper
 ) {
 
@@ -36,7 +35,7 @@ class GameProfileService(
         val refill = Refill.intervally(600, Duration.ofMinutes(10))
         limit = Bandwidth.classic(600, refill)
         val bucket = Bucket4j.builder().addLimit(limit).build()
-        this.config.connectionAddresses!!.forEach {
+        this.skinServerProperties.connectionAddresses.forEach {
             this.ipLeft[it] = bucket
         }
     }
@@ -87,13 +86,14 @@ class GameProfileService(
     fun getTextureFromJson(text: String): String? {
         val node = mapper.readTree(text)
         if (node.has("properties")) {
-            return node.get("properties").find {
+            val properties = node.get("properties").map {
                 if (it.has("name") && it.get("name").asText().equals("textures", ignoreCase = true)) {
-                    return it.get("value").asText()
+                    return@map it.get("value").asText()
                 } else {
-                    throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Player have no skin value!!!")
+                    throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Player have no name value!!!")
                 }
-            }!!.asText()
+            }
+            return properties.first() ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Player have no properties value!!!")
         } else {
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Player have no properties value!!!")
         }
