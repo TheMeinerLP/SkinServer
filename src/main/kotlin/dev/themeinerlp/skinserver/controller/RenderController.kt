@@ -80,7 +80,7 @@ class RenderController(
         val rotationEnum = rotation.orElse(HeadView.Front)
         val layerBoolean = layer.orElse(true)
         val content = body.inputStream.use {
-            this.renderService.renderHeadFromByteArray(size, rotationEnum, it.readAllBytes(), layerBoolean)
+            this.renderService.renderHeadFromByteArray(size, rotationEnum, it.readBytes(), layerBoolean)
         }
         return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(InputStreamResource(content.inputStream()))
     }

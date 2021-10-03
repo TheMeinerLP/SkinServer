@@ -78,7 +78,7 @@ class GameProfileService(
                 throw ResponseStatusException(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED, "Mojang has probably blocked you :(")
             }
             it.entity.content.use { iss ->
-                val content = iss.readAllBytes()
+                val content = iss.readBytes()
                 return String(content)
             }
         }
@@ -132,7 +132,7 @@ class GameProfileService(
             if (it.statusLine.statusCode != 200) {
                 throw IllegalStateException("Mojang has probably blocked you :(")
             }
-            return it.entity.content.readAllBytes()
+            return it.entity.content.readBytes()
         }
     }
 
