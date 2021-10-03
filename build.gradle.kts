@@ -61,11 +61,11 @@ tasks.withType<Test> {
 }
 
 tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootBuildImage> {
-    imageName = "ghcr.io/${System.getenv("repository").toLowerCase()}/${project.name.toLowerCase()}"
+    imageName = "ghcr.io/${System.getenv("repository")?: "skinserver".toLowerCase()}/${project.name.toLowerCase()}"
     docker {
         publishRegistry {
-            username = System.getenv("username")
-            password = System.getenv("password")
+            username = System.getenv("username") ?: null
+            password = System.getenv("password") ?: null
             url = "https://ghcr.io/v1/"
         }
     }
