@@ -27,7 +27,7 @@ jobs:
 
       - name: Build image with gradle
         run: >
-          ./gradlew bootBuildImage
+          ./gradlew bootBuildImage --debug
         env:
           repository: ${{ github.repository }}
           username: ${{ github.repository_owner }}
