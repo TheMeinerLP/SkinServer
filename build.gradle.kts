@@ -72,5 +72,11 @@ tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootBuildImage> {
         }
         isPublish = true
     }*/
+    docker {
+        publishRegistry {
+            username = System.getenv("username")
+            password = System.getenv("password")
+        }
+    }
     isPublish = true
 }
