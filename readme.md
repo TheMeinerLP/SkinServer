@@ -61,7 +61,7 @@ services:
       SKINSERVER_MIN-SIZE: 16
       SKINSERVER_CONNECTION-ADDRESSES_0: 127.0.0.1
 ```
-Then run the following commands:
+Then run following commands:
 ```shell
 docker-compose up -d 
 ```
