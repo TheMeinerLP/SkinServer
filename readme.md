@@ -1,22 +1,19 @@
 # Skin Server
+[![GitHub issues](https://img.shields.io/github/issues/TheMeinerLP/SkinServer)](https://github.com/TheMeinerLP/SkinServer/issues)
+[![GitHub forks](https://img.shields.io/github/forks/TheMeinerLP/SkinServer)](https://github.com/TheMeinerLP/SkinServer/network)
+[![GitHub stars](https://img.shields.io/github/stars/TheMeinerLP/SkinServer)](https://github.com/TheMeinerLP/SkinServer/stargazers)
+[![GitHub license](https://img.shields.io/github/license/TheMeinerLP/SkinServer)](https://github.com/TheMeinerLP/SkinServer/blob/master/LICENSE)
 
 This is a simple skin server to downloading, pre-caching and rendering
 
-Current features:
+# Features:
 - Render a skin head based on a file
 - Render a skin/head based on a uuid or username
 - Save skins into database for long-time cache
 - Token based IP Selection for mojang requests
+- **Dockerized**
+- **Kubernetes ready**
 
-
-### Application properties 
-```properties
-skinserver.max-size=512 #Defines the maximum upscaling size of a skin/head
-skinserver.min-size=16 #Defines the maximum downscaling size of a skin/head
-
-skinserver.connection-addresses[0]=XXX.XXX.XXX.XX # Defines a array entry for used addresses
-skinserver.connection-addresses[1]=XXX.XXX.XXX.XX # Defines a array entry for used addresses
-```
 # Installation with Docker
 Run this command for start a simple single instance with mongodb properties.
 ```shell
