@@ -1,5 +1,6 @@
 package dev.themeinerlp.skinserver.service
 
+import dev.themeinerlp.skinserver.utils.Constants
 import dev.themeinerlp.skinserver.utils.HeadView
 import org.springframework.stereotype.Service
 import java.awt.image.BufferedImage
@@ -10,8 +11,6 @@ import java.io.ByteArrayOutputStream
 @Service
 class RenderService {
 
-    val smallHeightIndicator = 32
-
     /**
      * Renders a head as a ByteArray
      */
@@ -20,19 +19,15 @@ class RenderService {
         val graphics = image.createGraphics()
         val original = ImageIO.read(content.inputStream())
 
-        if (original.height == smallHeightIndicator) {
+        if (original.height == Constants.SMALL_HEIGHT_INDICATOR) {
             graphics.scale(size.toDouble().div(original.width.toDouble()) * 8 ,size.toDouble().div(original.height.toDouble()).div(2) * 8)
             graphics.drawImage(original.getSubimage(rotation.leftHead, rotation.topHead, 8, 8), 0,0, null)
-            if (layer) {
-                graphics.drawImage(original.getSubimage(rotation.overlayLeft, rotation.overlayTop, 8, 8), 0,0, null)
-            }
+            if (layer) graphics.drawImage(original.getSubimage(rotation.overlayLeft, rotation.overlayTop, 8, 8), 0,0, null)
             graphics.dispose()
         } else {
             graphics.scale(size.toDouble().div(original.width.toDouble())  * 8 ,size.toDouble().div(original.height.toDouble())  * 8)
             graphics.drawImage(original.getSubimage(rotation.leftHead, rotation.topHead, 8, 8), 0,0, null)
-            if (layer) {
-                graphics.drawImage(original.getSubimage(rotation.overlayLeft, rotation.overlayTop, 8, 8), 0,0, null)
-            }
+            if (layer) graphics.drawImage(original.getSubimage(rotation.overlayLeft, rotation.overlayTop, 8, 8), 0,0, null)
             graphics.dispose()
         }
 

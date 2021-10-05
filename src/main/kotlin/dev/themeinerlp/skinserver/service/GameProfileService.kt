@@ -3,6 +3,7 @@ package dev.themeinerlp.skinserver.service
 import com.fasterxml.jackson.databind.ObjectMapper
 import dev.themeinerlp.skinserver.model.GameProfileHolder
 import dev.themeinerlp.skinserver.properties.SkinServerProperties
+import dev.themeinerlp.skinserver.utils.Constants
 import io.github.bucket4j.Bandwidth
 import io.github.bucket4j.Bucket4j
 import io.github.bucket4j.Refill
@@ -27,7 +28,6 @@ class GameProfileService(
 ) {
 
     val httpClient: CloseableHttpClient = HttpClients.createDefault()
-    val uuidRegex: Regex = Regex("([0-9a-fA-F]{8})([0-9a-fA-F]{4})([0-9a-fA-F]{4})([0-9a-fA-F]{4})([0-9a-fA-F]+)")
     val ipLeft: MutableMap<String, LocalBucket> = HashMap()
     private final val limit: Bandwidth
 
@@ -42,7 +42,7 @@ class GameProfileService(
 
 
     fun findGameProfile(username: String): GameProfileHolder? {
-        val getRequest = HttpGet("https://api.mojang.com/users/profiles/minecraft/${username}")
+        val getRequest = HttpGet("${Constants.MOJANG_URL}$username")
         getRequest.config = RequestConfig
             .custom()
             .setRedirectsEnabled(false)
@@ -55,21 +55,21 @@ class GameProfileService(
                 throw ResponseStatusException(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED, "Mojang has probably blocked you :(")
             }
             val node = mapper.readTree(it.entity.content)
-            val newUUID = node.get("id").asText().replaceFirst(uuidRegex, "$1-$2-$3-$4-$5")
+            val newUUID = node.get("id").asText().replaceFirst(Constants.UUID_REGEX, "$1-$2-$3-$4-$5")
             val profile = GameProfileHolder(UUID.fromString(newUUID), node.get("name").asText())
             return profile
         }
     }
 
     fun getGameProfile(uuid: UUID): String? {
-        val getRequest = HttpGet("https://sessionserver.mojang.com/session/minecraft/profile/$uuid")
+        val getRequest = HttpGet("${Constants.MOJANG_URL}$uuid")
         getRequest.config = RequestConfig
             .custom()
             .setRedirectsEnabled(false)
             .setLocalAddress(InetAddress.getByName(getLocalAddress()))
             .setConnectTimeout(3000)
             .build()
-        getRequest.setHeader("User-Agent", "Minecraft-SkinServer")
+        getRequest.setHeader("User-Agent", Constants.USER_AGENT)
         httpClient.execute(getRequest).use { it ->
             if (it.statusLine.statusCode != 200) {
                 throw ResponseStatusException(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED, "Mojang has probably blocked you :(")
@@ -124,7 +124,7 @@ class GameProfileService(
             .setLocalAddress(InetAddress.getByName(getLocalAddress()))
             .setConnectTimeout(3000)
             .build()
-        getRequest.setHeader("User-Agent", "Minecraft-SkinServer")
+        getRequest.setHeader("User-Agent", Constants.USER_AGENT)
         httpClient.execute(getRequest).use {
             if (it.statusLine.statusCode != 200) {
                 throw IllegalStateException("Mojang has probably blocked you :(")
