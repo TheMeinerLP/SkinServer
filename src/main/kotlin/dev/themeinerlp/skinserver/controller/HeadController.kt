@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.server.ResponseStatusException
 
-@RequestMapping("head/")
+@RequestMapping("head")
 @RestController
 class HeadController(
     val skinServerProperties: SkinServerProperties,
