@@ -12,13 +12,20 @@ import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.enums.ParameterIn
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.responses.ApiResponse
+import java.util.Base64
+import java.util.Optional
+import java.util.UUID
 import org.springframework.core.io.InputStreamResource
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestMethod
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.ResponseBody
+import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.server.ResponseStatusException
-import java.util.*
 
 @RequestMapping("head/by")
 @RestController
@@ -240,10 +247,7 @@ class HeadController(
                 "Skin URL are empty"
             )
             skin.username = this.gameProfileService.getNameFromJson(user)
-            skin.uuid = player.uuid ?: throw ResponseStatusException(
-                HttpStatus.NOT_FOUND,
-                "User UUID is null!"
-            )
+            skin.uuid = player.uuid
             skin.skinUrl = skinUrl
             skin.texture = String(Base64.getEncoder().encode(this.gameProfileService.downloadUrlToByteArray(skinUrl)))
             this.skinRepository.save(skin)

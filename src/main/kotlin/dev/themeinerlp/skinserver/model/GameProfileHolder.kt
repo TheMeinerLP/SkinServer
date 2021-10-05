@@ -1,10 +1,9 @@
 package dev.themeinerlp.skinserver.model
 
-import java.util.*
+import java.util.UUID
 
-class GameProfileHolder {
 
-    var uuid: UUID? = null
-    var name: String? = null
-
-}
+data class GameProfileHolder(
+    val uuid: UUID?,
+    val name: String?
+)

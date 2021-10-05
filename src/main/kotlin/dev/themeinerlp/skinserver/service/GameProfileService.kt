@@ -55,10 +55,8 @@ class GameProfileService(
                 throw ResponseStatusException(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED, "Mojang has probably blocked you :(")
             }
             val node = mapper.readTree(it.entity.content)
-            val profile = GameProfileHolder()
             val newUUID = node.get("id").asText().replaceFirst(uuidRegex, "$1-$2-$3-$4-$5")
-            profile.uuid = UUID.fromString(newUUID)
-            profile.name = node.get("name").asText()
+            val profile = GameProfileHolder(UUID.fromString(newUUID), node.get("name").asText())
             return profile
         }
     }
