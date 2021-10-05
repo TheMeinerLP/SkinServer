@@ -29,7 +29,7 @@ class GameProfileService(
 
     val httpClient: CloseableHttpClient = HttpClients.createDefault()
     val ipLeft: MutableMap<String, LocalBucket> = HashMap()
-    private final val limit: Bandwidth
+    private val limit: Bandwidth
 
     init {
         val refill = Refill.intervally(600, Duration.ofMinutes(10))
@@ -49,11 +49,9 @@ class GameProfileService(
             .setLocalAddress(InetAddress.getByName(getLocalAddress()))
             .setConnectTimeout(3000)
             .build()
-        getRequest.setHeader("User-Agent", "Minecraft-SkinServer")
+        getRequest.setHeader("User-Agent", Constants.USER_AGENT)
         httpClient.execute(getRequest).use {
-            if (it.statusLine.statusCode != 200) {
-                throw ResponseStatusException(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED, "Mojang has probably blocked you :(")
-            }
+            if (it.statusLine.statusCode != 200) throw ResponseStatusException(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED, "Mojang has probably blocked you :(")
             val node = mapper.readTree(it.entity.content)
             val newUUID = node.get("id").asText().replaceFirst(Constants.UUID_REGEX, "$1-$2-$3-$4-$5")
             val profile = GameProfileHolder(UUID.fromString(newUUID), node.get("name").asText())
@@ -71,12 +69,9 @@ class GameProfileService(
             .build()
         getRequest.setHeader("User-Agent", Constants.USER_AGENT)
         httpClient.execute(getRequest).use { it ->
-            if (it.statusLine.statusCode != 200) {
-                throw ResponseStatusException(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED, "Mojang has probably blocked you :(")
-            }
+            if (it.statusLine.statusCode != 200) throw ResponseStatusException(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED, "Mojang has probably blocked you :(")
             it.entity.content.use { iss ->
-                val content = iss.readBytes()
-                return String(content)
+                return String(iss.readBytes())
             }
         }
     }
@@ -87,14 +82,10 @@ class GameProfileService(
             val properties = node.get("properties").map {
                 if (it.has("name") && it.get("name").asText().equals("textures", ignoreCase = true)) {
                     return@map it.get("value").asText()
-                } else {
-                    throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Player have no name value!!!")
-                }
+                } else throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Player have no name value!!!")
             }
             return properties.first() ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Player have no properties value!!!")
-        } else {
-            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Player have no properties value!!!")
-        }
+        } else throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Player have no properties value!!!")
     }
     fun getNameFromJson(text: String): String {
         val node = mapper.readTree(text)
