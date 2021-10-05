@@ -82,12 +82,12 @@ class SkinController(
         )
         @PathVariable(required = true) username: String
     ): ResponseEntity<Any> {
-        if (size < this.skinServerProperties.minSize || size > this.skinServerProperties.maxSize) {
+        if (size < this.skinServerProperties.minSize || size > this.skinServerProperties.maxSize)
             throw ResponseStatusException(
                 HttpStatus.METHOD_NOT_ALLOWED,
                 "\"${size}\" is no valide size! Use ${skinServerProperties.minSize} - ${skinServerProperties.maxSize}"
             )
-        }
+
         var skin = this.skinRepository.findByUsernameIgnoreCase(username)
         if (skin == null) {
             skin = Skin()
@@ -177,12 +177,11 @@ class SkinController(
         )
         @PathVariable(required = true) uuid: UUID
     ): ResponseEntity<Any> {
-        if (size < this.skinServerProperties.minSize || size > this.skinServerProperties.maxSize) {
+        if (size < this.skinServerProperties.minSize || size > this.skinServerProperties.maxSize)
             throw ResponseStatusException(
                 HttpStatus.METHOD_NOT_ALLOWED,
                 "\"${size}\" is no valide size! Use ${skinServerProperties.minSize} - ${skinServerProperties.maxSize}"
             )
-        }
         var skin = this.skinRepository.findByUuid(uuid)
         if (skin == null) {
             skin = Skin()
