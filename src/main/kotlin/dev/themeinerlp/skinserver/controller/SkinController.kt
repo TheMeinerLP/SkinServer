@@ -61,7 +61,7 @@ class SkinController(
     )
     @ResponseBody
     @RequestMapping(
-        "skin/by/username/{size}/{username}",
+        "skin/username/{size}/{username}",
         method = [RequestMethod.GET]
     )
     fun getByUsernameSkin(
@@ -156,7 +156,7 @@ class SkinController(
     )
     @ResponseBody
     @RequestMapping(
-        "skin/by/uuid/{size}/{uuid:[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}}",
+        "skin/uuid/{size}/{uuid:[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}}",
         method = [RequestMethod.GET]
     )
     fun getByUUIDSkin(

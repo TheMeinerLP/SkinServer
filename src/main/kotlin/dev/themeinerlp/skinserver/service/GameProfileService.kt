@@ -12,7 +12,6 @@ import org.apache.http.client.config.RequestConfig
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.impl.client.CloseableHttpClient
 import org.apache.http.impl.client.HttpClients
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
@@ -41,8 +40,8 @@ class GameProfileService(
     }
 
 
-    fun findGameProfile(username: String): GameProfileHolder? {
-        val getRequest = HttpGet("${Constants.MOJANG_URL}$username")
+    fun findGameProfile(username: String): GameProfileHolder {
+        val getRequest = HttpGet("${Constants.MOJANG_NAME_TO_UUID_URL}$username")
         getRequest.config = RequestConfig
             .custom()
             .setRedirectsEnabled(false)
@@ -60,7 +59,7 @@ class GameProfileService(
     }
 
     fun getGameProfile(uuid: UUID): String? {
-        val getRequest = HttpGet("${Constants.MOJANG_URL}$uuid")
+        val getRequest = HttpGet("${Constants.MOJANG_PROFILE_URL}$uuid")
         getRequest.config = RequestConfig
             .custom()
             .setRedirectsEnabled(false)

@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.server.ResponseStatusException
 
-@RequestMapping("head/by")
+@RequestMapping("head/")
 @RestController
 class HeadController(
     val skinServerProperties: SkinServerProperties,
@@ -223,10 +223,7 @@ class HeadController(
         var skin = this.skinRepository.findByUsernameIgnoreCase(username)
         if (skin == null) {
             skin = Skin()
-            val player = this.gameProfileService.findGameProfile(username) ?: throw ResponseStatusException(
-                HttpStatus.NOT_FOUND,
-                "Username cannot be found!"
-            )
+            val player = this.gameProfileService.findGameProfile(username)
             val user = this.gameProfileService.getGameProfile(
                 player.uuid
                     ?: throw ResponseStatusException(
