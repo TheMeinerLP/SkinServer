@@ -1,10 +1,8 @@
 package dev.themeinerlp.skinserver
 
-import dev.themeinerlp.skinserver.config.SkinServerConfig
+import dev.themeinerlp.skinserver.properties.SkinServerProperties
 import io.swagger.v3.oas.annotations.OpenAPIDefinition
 import io.swagger.v3.oas.annotations.info.Info
-import org.springframework.boot.ApplicationArguments
-import org.springframework.boot.ApplicationRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.runApplication
@@ -20,7 +18,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc
 )
 
 @SpringBootApplication
-@EnableConfigurationProperties(value = [SkinServerConfig::class])
+@EnableConfigurationProperties(value = [SkinServerProperties::class])
 @EnableWebMvc
 class SkinServerApplication
 fun main(args: Array<String>) {

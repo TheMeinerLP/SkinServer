@@ -1,4 +1,4 @@
-package dev.themeinerlp.skinserver.config
+package dev.themeinerlp.skinserver.utils
 
 enum class HeadView(val leftHead: Int, val topHead: Int, val overlayLeft: Int, val overlayTop: Int) {
     Front(8, 8, 40, 8),

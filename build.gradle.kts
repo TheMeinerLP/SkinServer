@@ -3,10 +3,11 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("org.springframework.boot") version "2.5.5"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
-    kotlin("jvm") version "1.4.31"
-    kotlin("plugin.spring") version "1.4.31"
     id("com.github.johnrengelman.processes") version "0.5.0"
     id("org.springdoc.openapi-gradle-plugin") version "1.3.1"
+
+    kotlin("jvm") version "1.4.31"
+    kotlin("plugin.spring") version "1.4.31"
 }
 
 group = "dev.themeinerlp"
@@ -22,34 +23,29 @@ configurations {
 
 repositories {
     mavenCentral()
-    maven {
-        url = uri("https://packages.jetbrains.team/maven/p/skija/maven")
-    }
 }
 
 dependencies {
     // Database Support
-    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
-    // Validation
-    implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.boot:spring-boot-starter-data-mongodb:2.5.5")
     // Web Support
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-web:2.5.5")
     // Json Support
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.5")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.5.2-native-mt")
     // Session Support
-    implementation("org.springframework.session:spring-session-core")
+    implementation("org.springframework.session:spring-session-core:2.5.2")
     // Http Client
     implementation("org.apache.httpcomponents:httpclient:4.5.13")
     // IP Bucket
-    implementation("com.github.vladimir-bukhtoyarov:bucket4j-core:4.10.0")
+    implementation("com.github.vladimir-bukhtoyarov:bucket4j-core:6.2.0")
     // Swagger Docs
-    implementation("org.springdoc:springdoc-openapi-webmvc-core:1.5.6")
-    implementation("org.springdoc:springdoc-openapi-ui:1.5.6")
+    implementation("org.springdoc:springdoc-openapi-webmvc-core:1.5.10")
+    implementation("org.springdoc:springdoc-openapi-ui:1.5.10")
 
-    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor:2.5.5")
 
     //testImplementation("org.springframework.boot:spring-boot-starter-test")
     //testImplementation("io.projectreactor:reactor-test")

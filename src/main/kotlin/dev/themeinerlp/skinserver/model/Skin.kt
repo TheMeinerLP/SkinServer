@@ -1,14 +1,14 @@
 package dev.themeinerlp.skinserver.model
 
+import java.util.UUID
 import org.springframework.data.annotation.Id
-import java.util.*
 
-class Skin {
-
+data class Skin(
     @Id
-    var uuid: UUID? = null
-    var skinUrl: String? = null
-    var texture: String? = null
-    var username: String? = null
-
+    var uuid: UUID?,
+    var skinUrl: String?,
+    var texture: String?,
+    var username: String?
+) {
+    constructor() : this(null, null, null, null)
 }
