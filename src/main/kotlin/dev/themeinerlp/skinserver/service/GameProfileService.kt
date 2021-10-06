@@ -58,7 +58,7 @@ class GameProfileService(
         }
     }
 
-    fun getGameProfile(uuid: UUID): String? {
+    fun getGameProfile(uuid: UUID): String {
         val getRequest = HttpGet("${Constants.MOJANG_PROFILE_URL}$uuid")
         getRequest.config = RequestConfig
             .custom()
@@ -75,7 +75,7 @@ class GameProfileService(
         }
     }
 
-    fun getTextureFromJson(text: String): String? {
+    fun getTextureFromJson(text: String): String {
         val node = mapper.readTree(text)
         if (node.has("properties")) {
             val properties = node.get("properties").map {

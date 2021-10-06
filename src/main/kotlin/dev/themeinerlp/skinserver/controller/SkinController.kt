@@ -91,29 +91,9 @@ class SkinController(
         var skin = this.skinRepository.findByUsernameIgnoreCase(username)
         if (skin == null) {
             skin = Skin()
-            val player = this.gameProfileService.findGameProfile(username) ?: throw ResponseStatusException(
-                HttpStatus.NOT_FOUND,
-                "Username cannot be found!"
-            )
-            val user = this.gameProfileService.getGameProfile(
-                player.uuid
-                    ?: throw ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "User cannot be found!"
-                    )
-            ) ?: throw ResponseStatusException(
-                HttpStatus.NOT_FOUND,
-                "User cannot be found!"
-            )
-            val skinUrl = this.skinService.extractSkinUrl(
-                this.gameProfileService.getTextureFromJson(user) ?: throw ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "Skin URL are empty"
-                )
-            ) ?: throw ResponseStatusException(
-                HttpStatus.NOT_FOUND,
-                "Skin URL are empty"
-            )
+            val player = this.gameProfileService.findGameProfile(username)
+            val user = this.gameProfileService.getGameProfile(player.uuid)
+            val skinUrl = this.skinService.extractSkinUrl(this.gameProfileService.getTextureFromJson(user))
             skin.username = this.gameProfileService.getNameFromJson(user)
             skin.uuid = player.uuid
             skin.skinUrl = skinUrl
@@ -185,19 +165,8 @@ class SkinController(
         var skin = this.skinRepository.findByUuid(uuid)
         if (skin == null) {
             skin = Skin()
-            val user = this.gameProfileService.getGameProfile(uuid) ?: throw ResponseStatusException(
-                HttpStatus.NOT_FOUND,
-                "User cannot be found!"
-            )
-            val skinUrl = this.skinService.extractSkinUrl(
-                this.gameProfileService.getTextureFromJson(user) ?: throw ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "Skin URL are empty"
-                )
-            ) ?: throw ResponseStatusException(
-                HttpStatus.NOT_FOUND,
-                "Skin URL are empty"
-            )
+            val user = this.gameProfileService.getGameProfile(uuid)
+            val skinUrl = this.skinService.extractSkinUrl(this.gameProfileService.getTextureFromJson(user))
             skin.username = this.gameProfileService.getNameFromJson(user)
             skin.uuid = uuid
             skin.skinUrl = skinUrl

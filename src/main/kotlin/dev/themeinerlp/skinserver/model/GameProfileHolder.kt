@@ -4,6 +4,6 @@ import java.util.UUID
 
 
 data class GameProfileHolder(
-    val uuid: UUID?,
-    val name: String?
+    val uuid: UUID,
+    val name: String
 )

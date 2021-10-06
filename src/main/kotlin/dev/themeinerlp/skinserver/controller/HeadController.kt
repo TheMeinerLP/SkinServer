@@ -224,25 +224,8 @@ class HeadController(
         if (skin == null) {
             skin = Skin()
             val player = this.gameProfileService.findGameProfile(username)
-            val user = this.gameProfileService.getGameProfile(
-                player.uuid
-                    ?: throw ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "User UUID is null!"
-                    )
-            ) ?: throw ResponseStatusException(
-                HttpStatus.NOT_FOUND,
-                "User cannot be found!"
-            )
-            val skinUrl = this.skinService.extractSkinUrl(
-                this.gameProfileService.getTextureFromJson(user) ?: throw ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "Skin URL are empty"
-                )
-            ) ?: throw ResponseStatusException(
-                HttpStatus.NOT_FOUND,
-                "Skin URL are empty"
-            )
+            val user = this.gameProfileService.getGameProfile(player.uuid)
+            val skinUrl = this.skinService.extractSkinUrl(this.gameProfileService.getTextureFromJson(user))
             skin.username = this.gameProfileService.getNameFromJson(user)
             skin.uuid = player.uuid
             skin.skinUrl = skinUrl

@@ -14,7 +14,7 @@ class SkinService(
     /**
      * Extract url from json string
      */
-    fun extractSkinUrl(texture: String?): String? {
+    fun extractSkinUrl(texture: String?): String {
         if (texture == null) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Texture are empty")
         val jsonObject = String(Base64.getDecoder().decode(texture))
         val node = this.mapper.readTree(jsonObject)
