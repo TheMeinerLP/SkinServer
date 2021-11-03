@@ -65,16 +65,17 @@ tasks.withType<KotlinCompile> {
     }
 }
 
-tasks {
-    openApiGenerate {
-        generatorName.set("dynamic-html")
-        inputSpec.set("$buildDir/openapi.json")
-        outputDir.set("$buildDir/docs")
-        apiPackage.set("org.openapi.example.api")
-        invokerPackage.set("org.openapi.example.invoker")
-        modelPackage.set("org.openapi.example.model")
-        configOptions.put("dateLibrary", "java8")
-    }
+openApiGenerate {
+    generatorName.set("dynamic-html")
+    inputSpec.set("$buildDir/openapi.json")
+    outputDir.set("$buildDir/docs")
+    apiPackage.set("org.openapi.example.api")
+    invokerPackage.set("org.openapi.example.invoker")
+    modelPackage.set("org.openapi.example.model")
+    configOptions.put("dateLibrary", "java8")
+}
+tasks.withType<org.openapitools.generator.gradle.plugin.tasks.GenerateTask> {
+    dependsOn(tasks.withType(org.springdoc.openapi.gradle.plugin.OpenApiGeneratorTask::class.java))
 }
 
 tasks.withType<Test> {
