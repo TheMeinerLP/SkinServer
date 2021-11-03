@@ -15,14 +15,16 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
-      - name: Build swagger docs
-        run: gradle openApiGenerate
+      - name: Build openapi docs
+        run: gradle generateOpenApiDocs
+      - name: Build ReDoc docs
+        run: gradle generateReDocSkinServer
 
       - name: Deploy swagger to its assigned branch
         uses: s0/git-publish-subdir-action@develop
         env:
           REPO: self
           BRANCH: swagger
-          FOLDER: build/docs/docs
+          FOLDER: build/redoc-SkinServer
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CLEAR_GLOBS_FILE: ".github/swagger-publish-clear"

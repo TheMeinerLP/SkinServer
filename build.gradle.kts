@@ -6,6 +6,7 @@ plugins {
     id("com.github.johnrengelman.processes") version "0.5.0"
     id("org.springdoc.openapi-gradle-plugin") version "1.3.3"
     id("org.openapi.generator") version "5.3.0"
+    id("org.hidetake.swagger.generator") version "2.18.2"
 
     kotlin("jvm") version "1.5.31"
     kotlin("plugin.spring") version "1.5.31"
@@ -54,42 +55,40 @@ dependencies {
 
     kapt("org.springframework.boot:spring-boot-configuration-processor:2.5.5")
 
+    swaggerUI("org.webjars:swagger-ui:3.52.5")
+    swaggerCodegen("io.swagger.codegen.v3:swagger-codegen-cli:3.0.28")
     //testImplementation("org.springframework.boot:spring-boot-starter-test")
     //testImplementation("io.projectreactor:reactor-test")
 }
-tasks.withType<KotlinCompile> {
-    dependsOn(tasks.withType(ProcessResources::class.java))
-    kotlinOptions {
-        freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "1.8"
+
+swaggerSources {
+
+    create("SkinServer") {
+        setInputFile(File("$buildDir/openapi.json"))
     }
 }
+// Tasks
 
-openApiGenerate {
-    generatorName.set("dynamic-html")
-    inputSpec.set("$buildDir/openapi.json")
-    outputDir.set("$buildDir/docs")
-    apiPackage.set("org.openapi.example.api")
-    invokerPackage.set("org.openapi.example.invoker")
-    modelPackage.set("org.openapi.example.model")
-    configOptions.put("dateLibrary", "java8")
-}
-tasks.withType<org.openapitools.generator.gradle.plugin.tasks.GenerateTask> {
-    dependsOn(tasks.withType(org.springdoc.openapi.gradle.plugin.OpenApiGeneratorTask::class.java))
-}
+tasks {
 
-tasks.withType<Test> {
-    useJUnitPlatform()
-}
-
-tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootBuildImage> {
-    imageName = "ghcr.io/${System.getenv("repository") ?: "skinserver".toLowerCase()}/${project.name.toLowerCase()}:${project.version}"
-    docker {
-        publishRegistry {
-            username = System.getenv("username") ?: null
-            password = System.getenv("password") ?: null
-            url = "https://ghcr.io/v1/"
+    withType<KotlinCompile> {
+        kotlinOptions {
+            freeCompilerArgs = listOf("-Xjsr305=strict")
+            jvmTarget = "1.8"
         }
     }
-    isPublish = true
+    withType<Test> {
+        useJUnitPlatform()
+    }
+    withType<org.springframework.boot.gradle.tasks.bundling.BootBuildImage> {
+        imageName = "ghcr.io/${System.getenv("repository") ?: "skinserver".toLowerCase()}/${project.name.toLowerCase()}:${project.version}"
+        docker {
+            publishRegistry {
+                username = System.getenv("username") ?: null
+                password = System.getenv("password") ?: null
+                url = "https://ghcr.io/v1/"
+            }
+        }
+        isPublish = true
+    }
 }
