@@ -15,7 +15,7 @@ plugins {
 }
 
 group = "dev.themeinerlp"
-version = "1.0.0-SNAPSHOT"
+version = "1.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 java.targetCompatibility = JavaVersion.VERSION_1_8
 
@@ -80,7 +80,12 @@ tasks {
         useJUnitPlatform()
     }
     withType<org.springframework.boot.gradle.tasks.bundling.BootBuildImage> {
-        imageName = "ghcr.io/${System.getenv("repository").toLowerCase() ?: "skinserver".toLowerCase()}/${project.name.toLowerCase()}:${project.version}"
+        imageName = if (System.getenv("repository") != null) {
+             "ghcr.io/${System.getenv("repository").toLowerCase()}/${project.name.toLowerCase()}:${project.version}"
+        } else {
+            "ghcr.io/skinserver/${project.name.toLowerCase()}:${project.version}"
+        }
+
         docker {
             publishRegistry {
                 username = System.getenv("username") ?: null

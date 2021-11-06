@@ -18,7 +18,7 @@ jobs:
       - name: Build openapi docs
         run: gradle generateOpenApiDocs
       - name: Build ReDoc docs
-        run: gradle generateReDocSkinServer
+        run: gradle generateSwaggerUISkinServer
 
       - name: Deploy swagger to its assigned branch
         uses: s0/git-publish-subdir-action@develop
