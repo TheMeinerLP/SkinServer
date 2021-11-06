@@ -80,7 +80,7 @@ tasks {
         useJUnitPlatform()
     }
     withType<org.springframework.boot.gradle.tasks.bundling.BootBuildImage> {
-        imageName = "ghcr.io/${System.getenv("repository") ?: "skinserver".toLowerCase()}/${project.name.toLowerCase()}:${project.version}"
+        imageName = "ghcr.io/${System.getenv("repository").toLowerCase() ?: "skinserver".toLowerCase()}/${project.name.toLowerCase()}:${project.version}"
         docker {
             publishRegistry {
                 username = System.getenv("username") ?: null
