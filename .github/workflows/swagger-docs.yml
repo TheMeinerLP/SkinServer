@@ -25,6 +25,6 @@ jobs:
         env:
           REPO: self
           BRANCH: swagger
-          FOLDER: build/redoc-SkinServer
+          FOLDER: build/swagger-ui-SkinServer
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CLEAR_GLOBS_FILE: ".github/swagger-publish-clear"
