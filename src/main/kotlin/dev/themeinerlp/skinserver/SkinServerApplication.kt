@@ -6,8 +6,8 @@ import io.swagger.v3.oas.annotations.info.Info
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.runApplication
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories
 import org.springframework.web.servlet.config.annotation.EnableWebMvc
-
 
 @OpenAPIDefinition(
     info = Info(
@@ -18,8 +18,9 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc
 )
 
 @SpringBootApplication
-@EnableConfigurationProperties(value = [SkinServerProperties::class])
 @EnableWebMvc
+@EnableConfigurationProperties(value = [SkinServerProperties::class])
+@EnableMongoRepositories(value = ["dev.themeinerlp.skinserver.spec.repository.*"])
 class SkinServerApplication
 fun main(args: Array<String>) {
     runApplication<SkinServerApplication>(*args)

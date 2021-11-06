@@ -34,7 +34,7 @@ dependencies {
     // Database Support
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb:2.5.5")
     // Web Support
-    implementation("org.springframework.boot:spring-boot-starter-web:2.5.5")
+    implementation("org.springframework.boot:spring-boot-starter-web:2.5.6")
     // Json Support
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.0")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -53,7 +53,7 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-javadoc:1.5.11")
     implementation("org.springdoc:springdoc-openapi-data-rest:1.5.11")
 
-    kapt("org.springframework.boot:spring-boot-configuration-processor:2.5.5")
+    kapt("org.springframework.boot:spring-boot-configuration-processor:2.5.6")
 
     swaggerUI("org.webjars:swagger-ui:3.52.5")
     swaggerCodegen("io.swagger.codegen.v3:swagger-codegen-cli:3.0.28")
@@ -70,7 +70,6 @@ swaggerSources {
 // Tasks
 
 tasks {
-
     withType<KotlinCompile> {
         kotlinOptions {
             freeCompilerArgs = listOf("-Xjsr305=strict")

@@ -1,4 +1,4 @@
-package dev.themeinerlp.skinserver.model
+package dev.themeinerlp.skinserver.spec.dao.gameprofileholder
 
 import java.util.UUID
 

@@ -1,8 +1,8 @@
 package dev.themeinerlp.skinserver.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import dev.themeinerlp.skinserver.model.GameProfileHolder
 import dev.themeinerlp.skinserver.properties.SkinServerProperties
+import dev.themeinerlp.skinserver.spec.dao.gameprofileholder.GameProfileHolder
 import dev.themeinerlp.skinserver.utils.Constants
 import io.github.bucket4j.Bandwidth
 import io.github.bucket4j.Bucket4j
@@ -17,12 +17,12 @@ import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
 import java.net.InetAddress
 import java.time.Duration
-import java.util.UUID;
+import java.util.UUID
 import kotlin.collections.HashMap
 
 @Service
 class GameProfileService(
-    val skinServerProperties: SkinServerProperties,
+    skinServerProperties: SkinServerProperties,
     val mapper: ObjectMapper
 ) {
 
@@ -34,8 +34,8 @@ class GameProfileService(
         val refill = Refill.intervally(600, Duration.ofMinutes(10))
         limit = Bandwidth.classic(600, refill)
         val bucket = Bucket4j.builder().addLimit(limit).build()
-        this.skinServerProperties.connectionAddresses.forEach {
-            this.ipLeft[it] = bucket
+        skinServerProperties.connectionAddresses.forEach {
+            ipLeft[it] = bucket
         }
     }
 
