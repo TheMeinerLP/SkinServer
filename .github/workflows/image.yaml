@@ -1,4 +1,4 @@
-name: image
+name: Build image container, store in ghcr.io
 
 # Only triggering of this branches
 on:
