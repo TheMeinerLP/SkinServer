@@ -37,6 +37,6 @@ jobs:
           && !contains(toJSON(github.event.commits.*.message), '[skip release]')
 
         run: ./gradlew githubRelease
-          env:
-            repository: ${{ github.repository }}
-            GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        env:
+          repository: ${{ github.repository }}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
