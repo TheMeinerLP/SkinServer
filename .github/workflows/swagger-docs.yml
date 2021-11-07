@@ -1,8 +1,9 @@
 name: Build and deploy SwaggerDocs
 
 on:
-  push:
-    branches: [master]
+  release:
+    types:
+      - created
 
 jobs:
   build:
