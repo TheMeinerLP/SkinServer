@@ -2,9 +2,7 @@ package dev.themeinerlp.skinserver.spec.handler.skin
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
-import io.swagger.v3.oas.annotations.media.ArraySchema
 import io.swagger.v3.oas.annotations.media.Content
-import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import java.util.UUID
@@ -60,7 +58,7 @@ class SkinHandler {
             )
         ]
     )
-    @RequestMapping("skin/username/{size:\\d+}/{username:[a-zA-Z0-9_]{0,16}}",
+    @RequestMapping("skin/username/{size:\\d+}/{username:[a-zA-Z0-9_]{0,16}}/",
         method = [RequestMethod.GET],
         produces = [MediaType.IMAGE_PNG_VALUE]
     )
@@ -114,7 +112,7 @@ class SkinHandler {
         ]
     )
     @RequestMapping(
-        "skin/uuid/{size:\\d+}/{uuid:[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}}",
+        "skin/uuid/{size:\\d+}/{uuid:[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}}/",
         method = [RequestMethod.GET],
         produces = [MediaType.IMAGE_PNG_VALUE]
     )

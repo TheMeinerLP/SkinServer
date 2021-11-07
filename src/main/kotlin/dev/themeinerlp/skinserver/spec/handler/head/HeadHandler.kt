@@ -10,11 +10,7 @@ import java.util.UUID
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestMethod
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 interface HeadDatabaseHandler {
 
@@ -66,8 +62,8 @@ class HeadHandler {
         ]
     )
     @RequestMapping(
-        "head/username/{size:\\d+}/{username:[a-zA-Z0-9_]{0,16}}",
-        "head/username/{size:\\d+}/{username:[a-zA-Z0-9_]{0,16}}/{rotation}",
+        "head/username/{size:\\d+}/{username:[a-zA-Z0-9_]{0,16}}/",
+        "head/username/{size:\\d+}/{username:[a-zA-Z0-9_]{0,16}}/{rotation}/",
         method = [RequestMethod.GET],
         produces = [MediaType.IMAGE_PNG_VALUE]
     )
@@ -138,8 +134,8 @@ class HeadHandler {
         ]
     )
     @RequestMapping(
-        "head/uuid/{size:\\d+}/{uuid:[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}}",
-        "head/uuid/{size:\\d+}/{uuid:[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}}/{rotation}",
+        "head/uuid/{size:\\d+}/{uuid:[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}}/",
+        "head/uuid/{size:\\d+}/{uuid:[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}}/{rotation}/",
         method = [RequestMethod.GET],
         produces = [MediaType.IMAGE_PNG_VALUE]
     )

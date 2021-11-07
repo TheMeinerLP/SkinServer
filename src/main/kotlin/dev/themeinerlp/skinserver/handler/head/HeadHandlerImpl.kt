@@ -34,23 +34,21 @@ class HeadHandlerImpl(
     ): ResponseEntity<Any> {
         size ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Size is empty")
         username ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Username is empty")
-        rotation ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Rotation is empty")
         if (size < skinServerProperties.minSize || size > skinServerProperties.maxSize) {
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Size are to small or to big")
         }
         val skin = this.skinRepository.findByUsernameIgnoreCase(username) ?: getSkinBasedUsername(username)
-        return renderHead(size, skin, rotation, layer ?: true)
+        return renderHead(size, skin, rotation ?: HeadView.Front, layer ?: true)
     }
 
     override fun getHeadByUUID(size: Int?, uuid: UUID?, rotation: HeadView?, layer: Boolean?): ResponseEntity<Any> {
         size ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Size is empty")
         uuid ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "UUID is empty")
-        rotation ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Rotation is empty")
         if (size < this.skinServerProperties.minSize || size > this.skinServerProperties.maxSize) {
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Size are to small or to big")
         }
         val skin = this.skinRepository.findByUuid(uuid) ?: getSkinBasedUUID(uuid)
-        return renderHead(size, skin, rotation, layer ?: true)
+        return renderHead(size, skin, rotation ?: HeadView.Front, layer ?: true)
     }
 
 
