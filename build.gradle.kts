@@ -7,6 +7,8 @@ plugins {
     id("org.springdoc.openapi-gradle-plugin") version "1.3.3"
     id("org.openapi.generator") version "5.3.0"
     id("org.hidetake.swagger.generator") version "2.18.2"
+    id("nebula.plugin-plugin") version "16.0.1"
+
 
     kotlin("jvm") version "1.5.31"
     kotlin("plugin.spring") version "1.5.31"
