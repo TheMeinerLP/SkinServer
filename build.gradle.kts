@@ -7,7 +7,10 @@ plugins {
     id("org.springdoc.openapi-gradle-plugin") version "1.3.3"
     id("org.openapi.generator") version "5.3.0"
     id("org.hidetake.swagger.generator") version "2.18.2"
-    id("nebula.plugin-plugin") version "16.0.1"
+    id("org.shipkit.shipkit-changelog") version "1.1.15"
+    id("org.shipkit.shipkit-auto-version") version "1.1.19"
+    id("org.shipkit.shipkit-github-release") version "1.1.15"
+
 
 
     kotlin("jvm") version "1.5.31"
@@ -97,11 +100,19 @@ tasks {
         }
         isPublish = true
     }
+    withType<org.shipkit.changelog.GenerateChangelogTask> {
+        val version = project.ext["shipkit-auto-version.previous-version"] as String?
+        previousRevision = version
+        githubToken = System.getenv("GITHUB_TOKEN")
+        repository = System.getenv("repository")
+    }
+
+    withType<org.shipkit.github.release.GithubReleaseTask> {
+        dependsOn(":githubRelease")
+        repository = System.getenv("repository")
+        changelog = this.project.tasks.named<org.shipkit.changelog.GenerateChangelogTask>("generateChangelog").get().outputFile
+        githubToken = System.getenv("GITHUB_TOKEN")
+        newTagRevision = System.getenv("GITHUB_SHA")
+    }
 }
 
-publishing {
-    repositories {}
-}
-nebulaOssPublishing {
-    sonatypeUsername.set("fake")
-}
