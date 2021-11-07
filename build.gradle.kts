@@ -1,4 +1,4 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.changelog.date
 
 plugins {
     id("org.springframework.boot") version "2.5.5"
@@ -7,10 +7,7 @@ plugins {
     id("org.springdoc.openapi-gradle-plugin") version "1.3.3"
     id("org.openapi.generator") version "5.3.0"
     id("org.hidetake.swagger.generator") version "2.18.2"
-    id("org.shipkit.shipkit-changelog") version "1.1.15"
-    id("org.shipkit.shipkit-auto-version") version "1.1.19"
-    id("org.shipkit.shipkit-github-release") version "1.1.15"
-
+    id("org.jetbrains.changelog") version "1.3.1"
 
 
     kotlin("jvm") version "1.5.31"
@@ -20,7 +17,7 @@ plugins {
 }
 
 group = "dev.themeinerlp"
-version = "1.0.1-SNAPSHOT"
+version = "1.0.0"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 java.targetCompatibility = JavaVersion.VERSION_1_8
 
@@ -66,27 +63,23 @@ dependencies {
     //testImplementation("io.projectreactor:reactor-test")
 }
 
-swaggerSources {
 
-    create("SkinServer") {
-        setInputFile(File("$buildDir/openapi.json"))
-    }
-}
+
 // Tasks
-
 tasks {
-    withType<KotlinCompile> {
+    compileKotlin {
         kotlinOptions {
             freeCompilerArgs = listOf("-Xjsr305=strict")
             jvmTarget = "1.8"
         }
     }
-    withType<Test> {
+
+    test {
         useJUnitPlatform()
     }
-    withType<org.springframework.boot.gradle.tasks.bundling.BootBuildImage> {
+    bootBuildImage {
         imageName = if (System.getenv("repository") != null) {
-             "ghcr.io/${System.getenv("repository").toLowerCase()}/${project.name.toLowerCase()}:${project.version}"
+            "ghcr.io/${System.getenv("repository").toLowerCase()}/${project.name.toLowerCase()}:${project.version}"
         } else {
             "ghcr.io/skinserver/${project.name.toLowerCase()}:${project.version}"
         }
@@ -100,19 +93,15 @@ tasks {
         }
         isPublish = true
     }
-    withType<org.shipkit.changelog.GenerateChangelogTask> {
-        val version = project.ext["shipkit-auto-version.previous-version"] as String?
-        previousRevision = version
-        githubToken = System.getenv("GITHUB_TOKEN")
-        repository = System.getenv("repository")
-    }
-
-    withType<org.shipkit.github.release.GithubReleaseTask> {
-        dependsOn(":githubRelease")
-        repository = System.getenv("repository")
-        changelog = this.project.tasks.named<org.shipkit.changelog.GenerateChangelogTask>("generateChangelog").get().outputFile
-        githubToken = System.getenv("GITHUB_TOKEN")
-        newTagRevision = System.getenv("GITHUB_SHA")
-    }
 }
 
+changelog {
+    header.set(provider { "[${version.get()}] - ${date()}" })
+    keepUnreleasedSection.set(true)
+}
+
+swaggerSources {
+    create("SkinServer") {
+        setInputFile(File("$buildDir/openapi.json"))
+    }
+}
