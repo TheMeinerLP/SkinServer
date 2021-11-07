@@ -103,5 +103,5 @@ publishing {
     repositories {}
 }
 nebulaOssPublishing {
-
+    sonatypeUsername.set("")
 }
