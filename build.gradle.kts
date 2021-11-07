@@ -34,28 +34,28 @@ repositories {
 
 dependencies {
     // Database Support
-    implementation("org.springframework.boot:spring-boot-starter-data-mongodb:2.5.5")
+    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
     // Web Support
-    implementation("org.springframework.boot:spring-boot-starter-web:2.5.6")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    // Kubernetes
+    implementation("org.springframework.cloud:spring-cloud-starter-kubernetes-client-all:2.0.4")
     // Json Support
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.0")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.5.2-native-mt")
     // Session Support
-    implementation("org.springframework.session:spring-session-core:2.5.2")
+    implementation("org.springframework.session:spring-session-core")
     // Http Client
     implementation("org.apache.httpcomponents:httpclient:4.5.13")
     // IP Bucket
     implementation("com.github.vladimir-bukhtoyarov:bucket4j-core:6.3.0")
     // Swagger Docs
-    implementation("org.springdoc:springdoc-openapi-webmvc-core:1.5.11")
     implementation("org.springdoc:springdoc-openapi-ui:1.5.11")
     implementation("org.springdoc:springdoc-openapi-kotlin:1.5.11")
-    implementation("org.springdoc:springdoc-openapi-javadoc:1.5.11")
-    implementation("org.springdoc:springdoc-openapi-data-rest:1.5.11")
 
-    kapt("org.springframework.boot:spring-boot-configuration-processor:2.5.6")
+    kapt("org.springframework.boot:spring-boot-configuration-processor")
 
     swaggerUI("org.webjars:swagger-ui:3.52.5")
     swaggerCodegen("io.swagger.codegen.v3:swagger-codegen-cli:3.0.28")
