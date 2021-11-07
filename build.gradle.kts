@@ -59,8 +59,15 @@ dependencies {
 
     swaggerUI("org.webjars:swagger-ui:3.52.5")
     swaggerCodegen("io.swagger.codegen.v3:swagger-codegen-cli:3.0.28")
-    //testImplementation("org.springframework.boot:spring-boot-starter-test")
-    //testImplementation("io.projectreactor:reactor-test")
+
+    // Unit Testing
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+    // Test Containers
+    testImplementation("org.testcontainers:testcontainers-bom:1.16.2")
+    testImplementation("org.testcontainers:junit-jupiter:1.16.2")
+    testApi("org.testcontainers:mongodb:1.16.2")
+
 }
 
 
