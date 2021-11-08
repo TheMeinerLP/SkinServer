@@ -61,6 +61,7 @@ class RenderHandler {
     )
     @RequestMapping(
         "render/{size:\\d+}/",
+        "render/{size:\\d+}/{rotation}/",
         method = [RequestMethod.POST],
         produces = [MediaType.IMAGE_PNG_VALUE],
         consumes = [MediaType.MULTIPART_FORM_DATA_VALUE]
@@ -84,7 +85,7 @@ class RenderHandler {
             required = false,
             example = "Front",
         )
-        @RequestParam(required = false) rotation: HeadView? = HeadView.Front,
+        @PathVariable(required = false) rotation: HeadView? = HeadView.Front,
         @Parameter(
             description = "Show layer of skin at the head, default true",
             required = false,
