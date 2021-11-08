@@ -13,16 +13,25 @@
 
 ### Security
 
-## [1.0.2] - 2021-11-08
+## [1.0.3] - 2021-11-08
 ### Added
-
+- Set spring application name to `skinserver` for kubernetes
+- Disable for swagger generation k8s support
+- Bump dependencies
 ### Changed
-- **Every url must be ended with `/`**
-- Improve code readability
 
 ### Deprecated
 
 ### Removed
+
+### Fixed
+
+### Security
+
+## [1.0.2] - 2021-11-08
+### Changed
+- **Every url must be ended with `/`**
+- Improve code readability
 
 ### Fixed
 - Rotation is now optional and as a path parameter
@@ -33,7 +42,6 @@
         - Left
         - Top
         - Bottom
-### Security
 
 ## [1.0.1] - 2021-11-07
 ### Added

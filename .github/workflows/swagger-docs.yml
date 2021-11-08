@@ -17,7 +17,11 @@ jobs:
         with:
           java-version: 1.8
       - name: Build openapi docs
-        run: gradle generateOpenApiDocs
+        run: SPRING_PROFILES_ACTIVE=openapi gradle generateOpenApiDocs
+        env:
+          kubernetes.manifests.enabled: false
+          kubernetes.reconciler.enabled: false
+          kubernetes.informer.enabled: false
       - name: Build ReDoc docs
         run: gradle generateSwaggerUISkinServer
 
