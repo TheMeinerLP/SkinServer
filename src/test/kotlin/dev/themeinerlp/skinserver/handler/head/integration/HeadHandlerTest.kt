@@ -4,6 +4,8 @@ import dev.themeinerlp.skinserver.TestBase
 import dev.themeinerlp.skinserver.spec.dao.skin.Skin
 import dev.themeinerlp.skinserver.spec.repository.skin.SkinRepository
 import dev.themeinerlp.skinserver.utils.HeadView
+import java.nio.file.Files
+import java.util.Base64
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
@@ -12,8 +14,6 @@ import org.springframework.core.io.ResourceLoader
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.get
 import org.springframework.transaction.annotation.Transactional
-import java.nio.file.Files
-import java.util.*
 
 @Transactional
 class HeadHandlerTest : TestBase() {

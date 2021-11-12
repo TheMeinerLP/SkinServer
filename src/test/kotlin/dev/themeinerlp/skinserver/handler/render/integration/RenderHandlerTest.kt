@@ -5,6 +5,8 @@ import dev.themeinerlp.skinserver.TestBase
 import dev.themeinerlp.skinserver.spec.dao.skin.Skin
 import dev.themeinerlp.skinserver.spec.repository.skin.SkinRepository
 import dev.themeinerlp.skinserver.utils.HeadView
+import java.nio.file.Files
+import java.util.Base64
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
@@ -12,14 +14,10 @@ import org.junit.jupiter.params.provider.ValueSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.io.ResourceLoader
 import org.springframework.http.MediaType
-import org.springframework.mock.web.MockMultipartFile
 import org.springframework.mock.web.MockPart
-import org.springframework.test.web.servlet.post
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.transaction.annotation.Transactional
-import java.nio.file.Files
-import java.util.*
 
 @Transactional
 class RenderHandlerTest : TestBase() {

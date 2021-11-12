@@ -12,8 +12,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
 
 
-
-
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(classes = [SkinServerApplication::class])
 @AutoConfigureMockMvc

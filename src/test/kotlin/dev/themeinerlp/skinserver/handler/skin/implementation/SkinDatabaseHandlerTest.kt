@@ -19,9 +19,9 @@ class SkinDatabaseHandlerTest : TestBase() {
     fun create() = runBlocking {
         val skin = skinRepository.save(
             Skin(
-               texture = "fake",
-               username = "FakeUsername",
-               skinUrl = "https://fakeurl.org"
+                texture = "fake",
+                username = "FakeUsername",
+                skinUrl = "https://fakeurl.org"
             )
         )
 
