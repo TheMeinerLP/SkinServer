@@ -1,13 +1,13 @@
 package dev.themeinerlp.skinserver
 
 import dev.themeinerlp.skinserver.properties.SkinServerProperties
+import dev.themeinerlp.skinserver.spec.SkinServerAPISpec
 import io.swagger.v3.oas.annotations.OpenAPIDefinition
 import io.swagger.v3.oas.annotations.info.Info
 import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.runApplication
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories
-import org.springframework.web.servlet.config.annotation.EnableWebMvc
 
 @OpenAPIDefinition(
     info = Info(
@@ -17,11 +17,16 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc
     )
 )
 
-@SpringBootApplication
-@EnableWebMvc
+@SpringBootApplication(
+    scanBasePackageClasses = [
+        SkinServerApplication::class,
+        SkinServerAPISpec::class
+    ]
+)
+@ConfigurationPropertiesScan
 @EnableConfigurationProperties(value = [SkinServerProperties::class])
-@EnableMongoRepositories(value = ["dev.themeinerlp.skinserver.spec.repository.*"])
 class SkinServerApplication
+
 fun main(args: Array<String>) {
     runApplication<SkinServerApplication>(*args)
 }

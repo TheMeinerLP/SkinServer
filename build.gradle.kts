@@ -17,7 +17,7 @@ plugins {
 }
 
 group = "dev.themeinerlp"
-version = "1.0.0"
+version = "1.0.3"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 java.targetCompatibility = JavaVersion.VERSION_1_8
 
@@ -33,27 +33,29 @@ repositories {
 }
 
 dependencies {
+    // Boostrap
+    implementation("org.springframework.cloud:spring-cloud-starter-bootstrap:3.0.4")
     // Database Support
-    implementation("org.springframework.boot:spring-boot-starter-data-mongodb:2.5.5")
+    implementation("org.springframework.boot:spring-boot-starter-data-mongodb:2.5.6")
     // Web Support
     implementation("org.springframework.boot:spring-boot-starter-web:2.5.6")
+    implementation("org.springframework.boot:spring-boot-starter-actuator:2.5.6")
+    // Kubernetes
+    implementation("org.springframework.cloud:spring-cloud-starter-kubernetes-client-config:2.0.4")
     // Json Support
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.0")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.5.2-native-mt")
     // Session Support
-    implementation("org.springframework.session:spring-session-core:2.5.2")
+    implementation("org.springframework.session:spring-session-core:2.5.3")
     // Http Client
     implementation("org.apache.httpcomponents:httpclient:4.5.13")
     // IP Bucket
     implementation("com.github.vladimir-bukhtoyarov:bucket4j-core:6.3.0")
     // Swagger Docs
-    implementation("org.springdoc:springdoc-openapi-webmvc-core:1.5.11")
-    implementation("org.springdoc:springdoc-openapi-ui:1.5.11")
-    implementation("org.springdoc:springdoc-openapi-kotlin:1.5.11")
-    implementation("org.springdoc:springdoc-openapi-javadoc:1.5.11")
-    implementation("org.springdoc:springdoc-openapi-data-rest:1.5.11")
+    implementation("org.springdoc:springdoc-openapi-ui:1.5.12")
+    implementation("org.springdoc:springdoc-openapi-kotlin:1.5.12")
 
     kapt("org.springframework.boot:spring-boot-configuration-processor:2.5.6")
 
