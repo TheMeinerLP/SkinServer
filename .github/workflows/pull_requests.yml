@@ -2,11 +2,13 @@ name: Check if code still running
 
 on: pull_request
 
+concurrency:
+  group: pr-${{ github.base_ref }}-${{ github.head_ref }}
+  cancel-in-progress: true
+
 jobs:
-  build:
-
+  detekt:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 1.8
@@ -21,3 +23,17 @@ jobs:
         with:
           check_name: 'unit test results'
           files: build/test-results/**/*.xml
+  ktlint:
+    name: ktlint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@master
+        with:
+          fetch-depth: 1
+      - name: ktlint
+        uses: ScaCap/action-ktlint@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-review
