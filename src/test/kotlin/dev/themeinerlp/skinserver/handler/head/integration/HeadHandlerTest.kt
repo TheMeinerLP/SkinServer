@@ -1,9 +1,12 @@
-package dev.themeinerlp.skinserver.handler.skin.integration
+package dev.themeinerlp.skinserver.handler.head.integration
 
 import dev.themeinerlp.skinserver.TestBase
 import dev.themeinerlp.skinserver.spec.dao.skin.Skin
 import dev.themeinerlp.skinserver.spec.repository.skin.SkinRepository
+import dev.themeinerlp.skinserver.utils.HeadView
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.EnumSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.io.ResourceLoader
 import org.springframework.http.MediaType
@@ -13,7 +16,7 @@ import java.nio.file.Files
 import java.util.*
 
 @Transactional
-class SkinHandlerTest : TestBase() {
+class HeadHandlerTest : TestBase() {
 
     @Autowired
     lateinit var skinRepository: SkinRepository
@@ -35,7 +38,7 @@ class SkinHandlerTest : TestBase() {
     @Test
     fun `get Skin by Username`() {
         createTestData()
-        mockMvc.get("/skin/username/64/fakeuser/") {
+        mockMvc.get("/head/username/64/fakeuser/") {
             accept(MediaType.IMAGE_PNG)
             contentType = MediaType.IMAGE_PNG
         }.andExpect {
@@ -48,7 +51,35 @@ class SkinHandlerTest : TestBase() {
     @Test
     fun `get Skin by UUID`() {
         val uuid = createTestData().uuid
-        mockMvc.get("/skin/uuid/64/$uuid/") {
+        mockMvc.get("/head/uuid/64/$uuid/") {
+            accept(MediaType.IMAGE_PNG)
+            contentType = MediaType.IMAGE_PNG
+        }.andExpect {
+            status {
+                isOk()
+            }
+        }
+    }
+
+    @ParameterizedTest
+    @EnumSource(HeadView::class)
+    fun `get Skin by UUID different rotations`(rotation: HeadView) {
+        val uuid = createTestData().uuid
+        mockMvc.get("/head/uuid/64/$uuid/$rotation/") {
+            accept(MediaType.IMAGE_PNG)
+            contentType = MediaType.IMAGE_PNG
+        }.andExpect {
+            status {
+                isOk()
+            }
+        }
+    }
+
+    @ParameterizedTest
+    @EnumSource(HeadView::class)
+    fun `get Skin by Username different rotations`(rotation: HeadView) {
+        createTestData()
+        mockMvc.get("/head/username/64/fakeuser/$rotation/") {
             accept(MediaType.IMAGE_PNG)
             contentType = MediaType.IMAGE_PNG
         }.andExpect {

@@ -16,7 +16,7 @@ class TestUtilsImplementation {
             skinRepository.save(
                 Skin(
                     username = "fakeuser-$it",
-                    skinUrl = "https://fakeurl-$1.org",
+                    skinUrl = "https://fakeurl-$it.org",
                     texture = "faketexture-$it"
                 )
             )

@@ -82,10 +82,6 @@ tasks {
             jvmTarget = "1.8"
         }
     }
-
-    test {
-        useJUnitPlatform()
-    }
     bootBuildImage {
         imageName = if (System.getenv("repository") != null) {
             "ghcr.io/${System.getenv("repository").toLowerCase()}/${project.name.toLowerCase()}:${project.version}"
@@ -101,6 +97,9 @@ tasks {
             }
         }
         isPublish = true
+    }
+    test {
+        useJUnitPlatform()
     }
 }
 

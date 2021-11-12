@@ -5,10 +5,11 @@ import dev.themeinerlp.skinserver.spec.dao.skin.Skin
 import dev.themeinerlp.skinserver.spec.repository.skin.SkinRepository
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import java.util.*
+import org.springframework.transaction.annotation.Transactional
 
+@Transactional
 class SkinDatabaseHandlerTest : TestBase() {
 
     @Autowired
@@ -59,11 +60,27 @@ class SkinDatabaseHandlerTest : TestBase() {
         val count = 3
         val skins = testUtilsImplementation.createTestSkins(count)
         val databaseSkins = skinRepository.findAll().toList()
-        Assert.assertEquals(9, databaseSkins.count())
+        Assert.assertEquals(3, databaseSkins.count())
         repeat(count) {
             Assert.assertEquals(databaseSkins[it], skins[it])
         }
 
+    }
+
+    @Test
+    fun `get by Username`() = runBlocking {
+        val skins = testUtilsImplementation.createTestSkins(3)
+        val skin = skins.random()
+        val databaseSkin = skinRepository.findByUsernameIgnoreCase(skin.username!!)
+        Assert.assertEquals(skin.uuid!!, databaseSkin?.uuid!!)
+    }
+
+    @Test
+    fun `get by uuid`() = runBlocking {
+        val skins = testUtilsImplementation.createTestSkins(3)
+        val skin = skins.random()
+        val databaseSkin = skinRepository.findByUuid(skin.uuid!!)
+        Assert.assertEquals(skin.uuid!!, databaseSkin?.uuid!!)
     }
 
 }
