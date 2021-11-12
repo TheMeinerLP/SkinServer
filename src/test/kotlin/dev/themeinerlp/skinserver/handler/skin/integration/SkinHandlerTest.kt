@@ -3,14 +3,14 @@ package dev.themeinerlp.skinserver.handler.skin.integration
 import dev.themeinerlp.skinserver.TestBase
 import dev.themeinerlp.skinserver.spec.dao.skin.Skin
 import dev.themeinerlp.skinserver.spec.repository.skin.SkinRepository
-import java.nio.file.Files
-import java.util.Base64
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.io.ResourceLoader
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.get
 import org.springframework.transaction.annotation.Transactional
+import java.nio.file.Files
+import java.util.Base64
 
 @Transactional
 class SkinHandlerTest : TestBase() {

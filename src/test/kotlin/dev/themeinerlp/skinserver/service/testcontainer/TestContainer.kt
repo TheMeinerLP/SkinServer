@@ -1,11 +1,11 @@
 package dev.themeinerlp.skinserver.service.testcontainer
 
-import java.lang.String.format
 import org.springframework.context.ApplicationContextInitializer
 import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.test.context.support.TestPropertySourceUtils
 import org.testcontainers.containers.MongoDBContainer
 import org.testcontainers.utility.DockerImageName
+import java.lang.String.format
 
 class TestContainer : ApplicationContextInitializer<ConfigurableApplicationContext> {
 
