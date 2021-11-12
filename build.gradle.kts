@@ -8,6 +8,7 @@ plugins {
     id("org.openapi.generator") version "5.3.0"
     id("org.hidetake.swagger.generator") version "2.18.2"
     id("org.jetbrains.changelog") version "1.3.1"
+    id("io.gitlab.arturbosch.detekt") version "1.17.1"
 
 
     kotlin("jvm") version "1.5.31"

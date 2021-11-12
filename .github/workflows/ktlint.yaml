@@ -1,0 +1,23 @@
+name: ktlint
+
+on: [pull_request]
+
+concurrency:
+  group: ktlint-${{ github.base_ref }}-${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+  ktlint:
+    name: ktlint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@master
+        with:
+          fetch-depth: 1
+      - name: ktlint
+        uses: ScaCap/action-ktlint@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-review
