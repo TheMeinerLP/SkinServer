@@ -9,11 +9,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import javax.servlet.http.Part
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.multipart.MultipartFile
 
 interface RenderDatabaseHandler {
-    fun renderHead(skin: MultipartFile?, size: Int?, rotation: HeadView?, layer: Boolean?): ResponseEntity<Any>
+    fun renderHead(skin: Part?, size: Int?, rotation: HeadView?, layer: Boolean?): ResponseEntity<Any>
 }
 
 @RestController
@@ -48,11 +48,6 @@ class RenderHandler {
                 content = []
             ),
             ApiResponse(
-                description = "view is empty",
-                responseCode = "404",
-                content = []
-            ),
-            ApiResponse(
                 description = "Size are to small or to big",
                 responseCode = "500",
                 content = []
@@ -72,7 +67,7 @@ class RenderHandler {
             required = true,
         )
         @RequestPart(required = true)
-        skin: MultipartFile?,
+        skin: Part?,
         @Parameter(
             description = "Head scale, default is 64",
             required = true,

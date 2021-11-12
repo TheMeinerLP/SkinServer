@@ -8,6 +8,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.runApplication
+import org.springframework.context.annotation.Bean
+import org.springframework.data.mongodb.MongoDatabaseFactory
+import org.springframework.data.mongodb.MongoTransactionManager
+
 
 @OpenAPIDefinition(
     info = Info(
@@ -25,7 +29,13 @@ import org.springframework.boot.runApplication
 )
 @ConfigurationPropertiesScan
 @EnableConfigurationProperties(value = [SkinServerProperties::class])
-class SkinServerApplication
+class SkinServerApplication {
+
+    @Bean
+    fun transactionManager(dbFactory: MongoDatabaseFactory): MongoTransactionManager {
+        return MongoTransactionManager(dbFactory)
+    }
+}
 
 fun main(args: Array<String>) {
     runApplication<SkinServerApplication>(*args)

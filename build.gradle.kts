@@ -8,6 +8,7 @@ plugins {
     id("org.openapi.generator") version "5.3.0"
     id("org.hidetake.swagger.generator") version "2.18.2"
     id("org.jetbrains.changelog") version "1.3.1"
+    id("io.gitlab.arturbosch.detekt") version "1.17.1"
 
 
     kotlin("jvm") version "1.5.31"
@@ -61,8 +62,15 @@ dependencies {
 
     swaggerUI("org.webjars:swagger-ui:3.52.5")
     swaggerCodegen("io.swagger.codegen.v3:swagger-codegen-cli:3.0.28")
-    //testImplementation("org.springframework.boot:spring-boot-starter-test")
-    //testImplementation("io.projectreactor:reactor-test")
+
+    // Unit Testing
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+    // Test Containers
+    testImplementation("org.testcontainers:testcontainers-bom:1.16.2")
+    testImplementation("org.testcontainers:junit-jupiter:1.16.2")
+    testApi("org.testcontainers:mongodb:1.16.2")
+
 }
 
 
@@ -74,10 +82,6 @@ tasks {
             freeCompilerArgs = listOf("-Xjsr305=strict")
             jvmTarget = "1.8"
         }
-    }
-
-    test {
-        useJUnitPlatform()
     }
     bootBuildImage {
         imageName = if (System.getenv("repository") != null) {
@@ -94,6 +98,9 @@ tasks {
             }
         }
         isPublish = true
+    }
+    test {
+        useJUnitPlatform()
     }
 }
 
