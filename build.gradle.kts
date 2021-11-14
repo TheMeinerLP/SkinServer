@@ -9,6 +9,8 @@ plugins {
     id("org.hidetake.swagger.generator") version "2.18.2"
     id("org.jetbrains.changelog") version "1.3.1"
     id("io.gitlab.arturbosch.detekt") version "1.17.1"
+    id("org.springframework.experimental.aot") version "0.10.5"
+
 
 
     kotlin("jvm") version "1.5.31"
@@ -30,7 +32,9 @@ configurations {
 }
 
 repositories {
+    maven { url = uri("https://repo.spring.io/release") }
     mavenCentral()
+
 }
 
 dependencies {
@@ -84,6 +88,11 @@ tasks {
         }
     }
     bootBuildImage {
+        builder = "paketobuildpacks/builder:tiny"
+
+        environment = mapOf(
+            "BP_NATIVE_IMAGE" to "true"
+        )
         imageName = if (System.getenv("repository") != null) {
             "ghcr.io/${System.getenv("repository").toLowerCase()}/${project.name.toLowerCase()}:${project.version}"
         } else {
