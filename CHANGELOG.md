@@ -13,11 +13,14 @@
 
 ### Security
 
-## [1.0.3] - 2021-11-08
+## [1.0.4] - 2021-11-14
 ### Added
-- Set spring application name to `skinserver` for kubernetes
-- Disable for swagger generation k8s support
-- Bump dependencies
+- Add graalvm Support for Spring Boot
+- Add Junit tests
+- Add automatic pr feedback
+- Add detekt support
+- Add review bot
+
 ### Changed
 
 ### Deprecated
@@ -27,6 +30,12 @@
 ### Fixed
 
 ### Security
+
+## [1.0.3] - 2021-11-08
+### Added
+- Set spring application name to `skinserver` for kubernetes
+- Disable for swagger generation k8s support
+- Bump dependencies
 
 ## [1.0.2] - 2021-11-08
 ### Changed
