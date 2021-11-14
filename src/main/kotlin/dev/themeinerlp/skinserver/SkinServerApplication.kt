@@ -17,7 +17,7 @@ import org.springframework.data.mongodb.MongoTransactionManager
     info = Info(
         title = "Skin Server",
         description = "A simple server to pre-cache some minecraft skins and scale up and down or extract the head",
-        version = "1.0.1-SNAPSHOT"
+        version = "1.0.4"
     )
 )
 
