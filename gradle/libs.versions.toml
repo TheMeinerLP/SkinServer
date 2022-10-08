@@ -15,7 +15,7 @@ springdoOpenapi = "1.6.11"
 # Spring Boot
 springBootStarterWeb = { group = "org.springframework.boot", name = "spring-boot-starter-web", version.ref = "springBoot" }
 springBootStarterDataMongo = { group = "org.springframework.boot", name = "spring-boot-starter-data-mongodb", version.ref = "springBoot" }
-springBootSession = { group = "org.springframework.boot", name = "spring-session-core", version = "2.7.0" }
+springBootSession = { group = "org.springframework.session", name = "spring-session-core", version = "2.7.0" }
 
 springDocOpenApi = { group = "org.springdoc", name = "springdoc-openapi-ui", version.ref = "springdoOpenapi" }
 springDocJavaDoc = { group = "org.springdoc", name = "springdoc-openapi-javadoc", version.ref = "springdoOpenapi" }
