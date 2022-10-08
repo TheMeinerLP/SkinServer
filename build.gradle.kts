@@ -19,7 +19,8 @@ repositories {
 }
 
 group = "dev.themeinerlp"
-version = "1.0.5-SNAPSHOT"
+val baseVersion = "1.0.5"
+
 
 configurations {
     compileOnly {
@@ -83,4 +84,25 @@ swaggerSources {
     create("SkinServer") {
         setInputFile(File("$buildDir/openapi.json"))
     }
+}
+val releaseBranch = arrayOf("main", "master")
+version = if (getCurrentGitBranch() in releaseBranch) {
+    "$baseVersion+${getCurrentGitShortHash()}"
+} else {
+    "$baseVersion-SNAPSHOT+${getCurrentGitShortHash()}"
+}
+
+
+fun getCurrentGitBranch(): String {
+    val process = ProcessBuilder("git", "rev-parse", "--abbrev-ref", "HEAD").start()
+    val result = process.inputStream.bufferedReader().readText()
+    process.waitFor()
+    return result.trim()
+}
+
+fun getCurrentGitShortHash(): String {
+    val process = ProcessBuilder("git", "rev-parse", "--short", "HEAD").start()
+    val result = process.inputStream.bufferedReader().readText()
+    process.waitFor()
+    return result.trim()
 }
