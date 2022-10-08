@@ -1,4 +1,5 @@
 import org.jetbrains.changelog.date
+import org.jetbrains.kotlin.fir.builder.buildLabel
 
 plugins {
     id("org.springframework.boot") version "2.7.4"
@@ -63,7 +64,12 @@ tasks {
     }
     bootBuildImage {
         val repo = System.getenv("repository") ?: "skinserver"
-        imageName = "ghcr.io/${repo.toLowerCase()}/${project.name.toLowerCase()}:${project.version}"
+        val version = if (getCurrentGitBranch() in releaseBranch) {
+            baseVersion
+        } else {
+            "$baseVersion-SNAPSHOT"
+        }
+        imageName = "ghcr.io/${repo.toLowerCase()}/${project.name.toLowerCase()}:$version"
         docker {
             publishRegistry {
                 username = System.getenv("username") ?: null
