@@ -35,7 +35,7 @@ dependencies {
     implementation(libs.bundles.springDocOpenApi)
     // Json Support
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.4")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.6.3-native-mt")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.6.4")
     // Http Client
     implementation("org.apache.httpcomponents:httpclient:4.5.13")
     // IP Bucket
