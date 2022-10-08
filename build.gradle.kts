@@ -11,8 +11,11 @@ plugins {
 
     kotlin("jvm") version "1.7.20"
     kotlin("plugin.spring") version "1.7.20"
-    kotlin("kapt") version "1.4.32"
+    kotlin("kapt") version "1.7.20"
+}
 
+repositories {
+    mavenCentral()
 }
 
 group = "dev.themeinerlp"
@@ -27,9 +30,7 @@ configurations {
 
 }
 
-repositories {
-    mavenCentral()
-}
+
 
 dependencies {
     // Database Support
@@ -99,8 +100,8 @@ changelog {
     keepUnreleasedSection.set(true)
 }
 
-swaggerSources {
+/*swaggerSources {
     create("SkinServer") {
         setInputFile(File("$buildDir/openapi.json"))
     }
-}
+}*/
