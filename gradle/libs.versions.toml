@@ -1,0 +1,31 @@
+metadata.format.version = "1.1"
+[versions]
+# Plugins
+springBoot = "2.7.4"
+dependency-management-plugin = "1.0.14.RELEASE"
+processes = "0.5.0"
+springdoc-openapi = "1.4.0"
+openapi-generator = "6.2.0"
+swagger-generator = "2.19.2"
+changelog = "1.3.1"
+# Dependencies
+springdoOpenapi = "1.6.11"
+
+[libraries]
+# Spring Boot
+springBootStarterWeb = { group = "org.springframework.boot", name = "spring-boot-starter-web", version.ref = "springBoot" }
+springBootStarterDataMongo = { group = "org.springframework.boot", name = "spring-boot-starter-data-mongodb", version.ref = "springBoot" }
+springBootSession = { group = "org.springframework.boot", name = "spring-session-core", version.ref = "springBoot" }
+
+springDocOpenApi = { group = "org.springdoc", name = "springdoc-openapi-ui", version.ref = "springdoOpenapi" }
+springDocJavaDoc = { group = "org.springdoc", name = "springdoc-openapi-javadoc", version.ref = "springdoOpenapi" }
+springDocDataRest = { group = "org.springdoc", name = "springdoc-openapi-data-rest", version.ref = "springdoOpenapi" }
+springDocWebMvc = { group = "org.springdoc", name = "springdoc-openapi-webmvc-core", version.ref = "springdoOpenapi" }
+springDocKotlin = { group = "org.springdoc", name = "springdoc-openapi-kotlin", version.ref = "springdoOpenapi" }
+
+[plugins]
+# Spring Boot
+
+[bundles]
+springDocOpenApi = ["springDocOpenApi", "springDocJavaDoc", "springDocDataRest", "springDocWebMvc", "springDocKotlin"]
+springBoot = ["springBootStarterDataMongo", "springBootStarterWeb", "springBootSession"]
