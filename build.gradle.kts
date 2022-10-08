@@ -20,14 +20,11 @@ repositories {
 
 group = "dev.themeinerlp"
 version = "1.0.5-SNAPSHOT"
-java.sourceCompatibility = JavaVersion.VERSION_1_8
-java.targetCompatibility = JavaVersion.VERSION_1_8
 
 configurations {
     compileOnly {
         extendsFrom(configurations.annotationProcessor.get())
     }
-
 }
 
 
@@ -70,7 +67,7 @@ tasks {
     compileKotlin {
         kotlinOptions {
             freeCompilerArgs = listOf("-Xjsr305=strict")
-            jvmTarget = "1.8"
+            jvmTarget = "17"
         }
     }
 
