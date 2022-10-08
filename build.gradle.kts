@@ -1,23 +1,22 @@
 import org.jetbrains.changelog.date
 
 plugins {
-    id("org.springframework.boot") version "2.5.5"
-    id("io.spring.dependency-management") version "1.0.11.RELEASE"
+    id("org.springframework.boot") version "2.7.4"
+    id("io.spring.dependency-management") version "1.0.14.RELEASE"
     id("com.github.johnrengelman.processes") version "0.5.0"
-    id("org.springdoc.openapi-gradle-plugin") version "1.3.3"
-    id("org.openapi.generator") version "5.3.0"
-    id("org.hidetake.swagger.generator") version "2.18.2"
+    id("org.springdoc.openapi-gradle-plugin") version "1.4.0"
+    id("org.openapi.generator") version "6.2.0"
+    id("org.hidetake.swagger.generator") version "2.19.2"
     id("org.jetbrains.changelog") version "1.3.1"
 
-
-    kotlin("jvm") version "1.5.31"
-    kotlin("plugin.spring") version "1.5.31"
+    kotlin("jvm") version "1.7.20"
+    kotlin("plugin.spring") version "1.7.20"
     kotlin("kapt") version "1.4.32"
 
 }
 
 group = "dev.themeinerlp"
-version = "1.0.0"
+version = "1.0.5-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 java.targetCompatibility = JavaVersion.VERSION_1_8
 
