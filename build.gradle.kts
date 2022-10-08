@@ -97,8 +97,8 @@ changelog {
     keepUnreleasedSection.set(true)
 }
 
-/*swaggerSources {
+swaggerSources {
     create("SkinServer") {
         setInputFile(File("$buildDir/openapi.json"))
     }
-}*/
+}
