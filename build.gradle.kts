@@ -30,34 +30,20 @@ configurations {
 
 
 dependencies {
-    // Database Support
-    implementation("org.springframework.boot:spring-boot-starter-data-mongodb:2.5.5")
-    // Web Support
-    implementation("org.springframework.boot:spring-boot-starter-web:2.5.6")
+    implementation(libs.bundles.springBoot)
+    implementation(libs.bundles.springDocOpenApi)
     // Json Support
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.0")
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.5.2-native-mt")
-    // Session Support
-    implementation("org.springframework.session:spring-session-core:2.5.2")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.6.3-native-mt")
     // Http Client
     implementation("org.apache.httpcomponents:httpclient:4.5.13")
     // IP Bucket
-    implementation("com.github.vladimir-bukhtoyarov:bucket4j-core:6.3.0")
-    // Swagger Docs
-    implementation("org.springdoc:springdoc-openapi-webmvc-core:1.5.11")
-    implementation("org.springdoc:springdoc-openapi-ui:1.5.11")
-    implementation("org.springdoc:springdoc-openapi-kotlin:1.5.11")
-    implementation("org.springdoc:springdoc-openapi-javadoc:1.5.11")
-    implementation("org.springdoc:springdoc-openapi-data-rest:1.5.11")
+    implementation("com.github.vladimir-bukhtoyarov:bucket4j-core:7.6.0")
 
-    kapt("org.springframework.boot:spring-boot-configuration-processor:2.5.6")
+    kapt("org.springframework.boot:spring-boot-configuration-processor:2.7.4")
 
-    swaggerUI("org.webjars:swagger-ui:3.52.5")
-    swaggerCodegen("io.swagger.codegen.v3:swagger-codegen-cli:3.0.28")
-    //testImplementation("org.springframework.boot:spring-boot-starter-test")
-    //testImplementation("io.projectreactor:reactor-test")
+    swaggerUI("org.webjars:swagger-ui:4.14.2")
+    swaggerCodegen("io.swagger.codegen.v3:swagger-codegen-cli:3.0.35")
 }
 
 
@@ -75,12 +61,8 @@ tasks {
         useJUnitPlatform()
     }
     bootBuildImage {
-        imageName = if (System.getenv("repository") != null) {
-            "ghcr.io/${System.getenv("repository").toLowerCase()}/${project.name.toLowerCase()}:${project.version}"
-        } else {
-            "ghcr.io/skinserver/${project.name.toLowerCase()}:${project.version}"
-        }
-
+        val repo = System.getenv("repository") ?: "skinserver"
+        imageName = "ghcr.io/${repo.toLowerCase()}/${project.name.toLowerCase()}:${project.version}"
         docker {
             publishRegistry {
                 username = System.getenv("username") ?: null
