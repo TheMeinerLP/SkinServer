@@ -1,5 +1,6 @@
-package dev.themeinerlp.skinserver.spec.handler.head
+package dev.themeinerlp.skinserver.spec.handler
 
+import dev.themeinerlp.skinserver.spec.database.HeadDatabaseHandler
 import dev.themeinerlp.skinserver.utils.HeadView
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
@@ -15,12 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-
-interface HeadDatabaseHandler {
-
-    fun getHeadByUsername(size: Int?, username: String?, rotation: HeadView?, layer: Boolean?): ResponseEntity<Any>
-    fun getHeadByUUID(size: Int?, uuid: UUID?, rotation: HeadView?, layer: Boolean?): ResponseEntity<Any>
-}
 
 @RestController
 class HeadHandler {

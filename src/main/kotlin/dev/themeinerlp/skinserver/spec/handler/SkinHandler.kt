@@ -1,10 +1,9 @@
-package dev.themeinerlp.skinserver.spec.handler.skin
+package dev.themeinerlp.skinserver.spec.handler
 
+import dev.themeinerlp.skinserver.spec.database.SkinDatabaseHandler
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
-import io.swagger.v3.oas.annotations.media.ArraySchema
 import io.swagger.v3.oas.annotations.media.Content
-import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import java.util.UUID
@@ -15,12 +14,6 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
-
-interface SkinDatabaseHandler {
-
-    fun getSkinByUsername(size: Int?, username: String?): ResponseEntity<Any>
-    fun getSkinByUUID(size: Int?, uuid: UUID?): ResponseEntity<Any>
-}
 
 @RestController
 class SkinHandler {
