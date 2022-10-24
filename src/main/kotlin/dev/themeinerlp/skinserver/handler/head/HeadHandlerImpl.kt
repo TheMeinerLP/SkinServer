@@ -4,8 +4,8 @@ import dev.themeinerlp.skinserver.properties.SkinServerProperties
 import dev.themeinerlp.skinserver.service.GameProfileService
 import dev.themeinerlp.skinserver.service.RenderService
 import dev.themeinerlp.skinserver.service.SkinService
-import dev.themeinerlp.skinserver.spec.dao.skin.Skin
-import dev.themeinerlp.skinserver.spec.handler.head.HeadDatabaseHandler
+import dev.themeinerlp.skinserver.spec.dbo.skin.Skin
+import dev.themeinerlp.skinserver.spec.database.HeadDatabaseHandler
 import dev.themeinerlp.skinserver.spec.repository.skin.SkinRepository
 import dev.themeinerlp.skinserver.utils.HeadView
 import java.util.Base64

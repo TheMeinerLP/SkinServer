@@ -1,4 +1,4 @@
-package dev.themeinerlp.skinserver.spec.dao.gameprofileholder
+package dev.themeinerlp.skinserver.spec.dbo.gameprofileholder
 
 import java.util.UUID
 

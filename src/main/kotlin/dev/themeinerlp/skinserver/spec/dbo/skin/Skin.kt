@@ -1,4 +1,4 @@
-package dev.themeinerlp.skinserver.spec.dao.skin
+package dev.themeinerlp.skinserver.spec.dbo.skin
 
 import java.util.UUID
 import org.springframework.data.annotation.Id

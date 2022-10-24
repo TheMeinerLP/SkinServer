@@ -2,7 +2,7 @@ package dev.themeinerlp.skinserver.handler.render
 
 import dev.themeinerlp.skinserver.properties.SkinServerProperties
 import dev.themeinerlp.skinserver.service.RenderService
-import dev.themeinerlp.skinserver.spec.handler.render.RenderDatabaseHandler
+import dev.themeinerlp.skinserver.spec.database.RenderDatabaseHandler
 import dev.themeinerlp.skinserver.utils.HeadView
 import org.springframework.core.io.InputStreamResource
 import org.springframework.http.HttpStatus

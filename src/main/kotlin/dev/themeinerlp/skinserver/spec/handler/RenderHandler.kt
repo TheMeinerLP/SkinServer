@@ -1,9 +1,9 @@
-package dev.themeinerlp.skinserver.spec.handler.render
+package dev.themeinerlp.skinserver.spec.handler
 
+import dev.themeinerlp.skinserver.spec.database.RenderDatabaseHandler
 import dev.themeinerlp.skinserver.utils.HeadView
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
-import io.swagger.v3.oas.annotations.enums.ParameterIn
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
@@ -17,10 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
-
-interface RenderDatabaseHandler {
-    fun renderHead(skin: MultipartFile?, size: Int?, rotation: HeadView?, layer: Boolean?): ResponseEntity<Any>
-}
 
 @RestController
 class RenderHandler {

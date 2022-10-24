@@ -2,10 +2,12 @@ package dev.themeinerlp.skinserver.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import dev.themeinerlp.skinserver.properties.SkinServerProperties
-import dev.themeinerlp.skinserver.spec.dao.gameprofileholder.GameProfileHolder
+import dev.themeinerlp.skinserver.spec.dbo.gameprofileholder.GameProfileHolder
 import dev.themeinerlp.skinserver.utils.Constants
+import dev.themeinerlp.skinserver.utils.USER_AGENT
+import dev.themeinerlp.skinserver.utils.USER_AGENT_NAME
 import io.github.bucket4j.Bandwidth
-import io.github.bucket4j.Bucket4j
+import io.github.bucket4j.Bucket
 import io.github.bucket4j.Refill
 import io.github.bucket4j.local.LocalBucket
 import org.apache.http.client.config.RequestConfig
@@ -33,7 +35,7 @@ class GameProfileService(
     init {
         val refill = Refill.intervally(600, Duration.ofMinutes(10))
         limit = Bandwidth.classic(600, refill)
-        val bucket = Bucket4j.builder().addLimit(limit).build()
+        val bucket = Bucket.builder().addLimit(limit).build()
         skinServerProperties.connectionAddresses.forEach {
             ipLeft[it] = bucket
         }
@@ -48,13 +50,15 @@ class GameProfileService(
             .setLocalAddress(InetAddress.getByName(getLocalAddress()))
             .setConnectTimeout(3000)
             .build()
-        getRequest.setHeader("User-Agent", Constants.USER_AGENT)
+        getRequest.setHeader(USER_AGENT_NAME, USER_AGENT)
         httpClient.execute(getRequest).use {
-            if (it.statusLine.statusCode != 200) throw ResponseStatusException(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED, "Mojang has probably blocked you :(")
+            if (it.statusLine.statusCode != 200) throw ResponseStatusException(
+                HttpStatus.BANDWIDTH_LIMIT_EXCEEDED,
+                "Mojang has probably blocked you :("
+            )
             val node = mapper.readTree(it.entity.content)
             val newUUID = node.get("id").asText().replaceFirst(Constants.UUID_REGEX, "$1-$2-$3-$4-$5")
-            val profile = GameProfileHolder(UUID.fromString(newUUID), node.get("name").asText())
-            return profile
+            return GameProfileHolder(UUID.fromString(newUUID), node.get("name").asText())
         }
     }
 
@@ -66,8 +70,8 @@ class GameProfileService(
             .setLocalAddress(InetAddress.getByName(getLocalAddress()))
             .setConnectTimeout(3000)
             .build()
-        getRequest.setHeader("User-Agent", Constants.USER_AGENT)
-        httpClient.execute(getRequest).use { it ->
+        getRequest.setHeader(USER_AGENT_NAME, USER_AGENT)
+        httpClient.execute(getRequest).use {
             if (it.statusLine.statusCode != 200) throw ResponseStatusException(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED, "Mojang has probably blocked you :(")
             it.entity.content.use { iss ->
                 return String(iss.readBytes())
@@ -97,7 +101,7 @@ class GameProfileService(
 
 
     fun getLocalAddress(): String {
-        val pair = this.ipLeft.toList().sortedBy { (_, value) -> value.availableTokens }.first()
+        val pair = this.ipLeft.toList().minBy { (_, value) -> value.availableTokens }
         return if (pair.second.tryConsume(1)) {
             pair.first
         } else {
@@ -114,7 +118,7 @@ class GameProfileService(
             .setLocalAddress(InetAddress.getByName(getLocalAddress()))
             .setConnectTimeout(3000)
             .build()
-        getRequest.setHeader("User-Agent", Constants.USER_AGENT)
+        getRequest.setHeader(USER_AGENT_NAME, USER_AGENT)
         httpClient.execute(getRequest).use {
             if (it.statusLine.statusCode != 200) {
                 throw IllegalStateException("Mojang has probably blocked you :(")
