@@ -2,7 +2,7 @@ package dev.themeinerlp.skinserver.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import dev.themeinerlp.skinserver.properties.SkinServerProperties
-import dev.themeinerlp.skinserver.spec.dao.gameprofileholder.GameProfileHolder
+import dev.themeinerlp.skinserver.spec.dbo.gameprofileholder.GameProfileHolder
 import dev.themeinerlp.skinserver.utils.Constants
 import dev.themeinerlp.skinserver.utils.USER_AGENT
 import dev.themeinerlp.skinserver.utils.USER_AGENT_NAME
